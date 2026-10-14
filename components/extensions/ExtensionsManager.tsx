@@ -894,7 +894,7 @@ export function ExtensionsManager({
           className="absolute -top-16 -right-12 h-40 w-40 rounded-full bg-accent-soft/70 blur-2xl"
         />
         <div className="relative flex items-start gap-4">
-          <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg border border-accent-200 bg-accent-soft text-accent">
+          <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg border border-accent/50 bg-accent-soft text-accent">
             <PuzzlePiece size={24} weight="duotone" aria-hidden />
           </div>
           <div>
