@@ -35,6 +35,8 @@
   --color-bg: #f9f8f5;
   --color-surface: #eae7df;
   --color-surface-elevated: #d3cec2;
+  --color-surface-muted: #dfdbd1;
+  --color-surface-sunken: #eeebe4;
   --color-overlay: rgba(28, 26, 22, 0.42);
 
   /* Text (light) */
@@ -266,6 +268,8 @@
   --color-bg: #f9f8f5;
   --color-surface: #eae7df;
   --color-surface-elevated: #d3cec2;
+  --color-surface-muted: #dfdbd1;
+  --color-surface-sunken: #eeebe4;
   --color-overlay: rgba(28, 26, 22, 0.42);
   --color-text: #1c1a16;
   --color-text-muted: #3f3c35;
@@ -344,6 +348,8 @@
   --color-bg: #111010;
   --color-surface: #22211d;
   --color-surface-elevated: #2e2c26;
+  --color-surface-muted: #2a2823;
+  --color-surface-sunken: #1a1916;
   --color-overlay: rgba(0, 0, 0, 0.55);
 
   /* Text (dark) */
@@ -470,6 +476,8 @@
   --color-bg: var(--color-bg);
   --color-surface: var(--color-surface);
   --color-surface-elevated: var(--color-surface-elevated);
+  --color-surface-muted: var(--color-surface-muted);
+  --color-surface-sunken: var(--color-surface-sunken);
   --color-overlay: var(--color-overlay);
 
   --color-text: var(--color-text);
