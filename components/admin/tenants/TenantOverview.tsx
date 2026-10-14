@@ -178,7 +178,7 @@ export function TenantOverview({ organization, counts, integrations, cobrancaLig
               label={t("Solicitações LGPD pendentes")}
               value={
                 <span className="flex items-center gap-1.5">
-                  <span className={counts.lgpd_requests_pending > 0 ? "text-amber-600 font-semibold" : ""}>
+                  <span className={counts.lgpd_requests_pending > 0 ? "text-warning-fg font-semibold" : ""}>
                     {counts.lgpd_requests_pending}
                   </span>
                   {counts.lgpd_requests_pending > 0 && (

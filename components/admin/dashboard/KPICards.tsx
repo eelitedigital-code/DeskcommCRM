@@ -22,9 +22,9 @@ function KPICard({ label, value, subtitle, Icon, accent, danger }: KPICardProps)
       : "text-muted-foreground";
 
   const valueColor = danger
-    ? "text-red-600"
+    ? "text-error-fg"
     : accent
-      ? "text-amber-600"
+      ? "text-warning-fg"
       : "text-foreground";
 
   return (

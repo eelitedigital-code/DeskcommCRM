@@ -147,7 +147,7 @@ export function CatalogAdmission({
   const t = useT();
   const fileInput = useRef<HTMLInputElement>(null);
   return (
-    <Card className="overflow-hidden border-accent-200" data-testid="extension-catalog-admission">
+    <Card className="overflow-hidden border-accent/50" data-testid="extension-catalog-admission">
       <div className="grid md:grid-cols-[1.15fr_0.85fr]">
         <div className="p-5 sm:p-6">
           <Badge variant="info">{t("Responsável pela instalação")}</Badge>
@@ -214,7 +214,7 @@ export function CatalogAdmission({
             <p className="mt-2 text-xs text-muted-foreground">{blockedReason}</p>
           ) : null}
         </div>
-        <div className="border-t border-accent-200 bg-accent-soft/45 p-5 sm:p-6 md:border-t-0 md:border-l">
+        <div className="border-t border-accent/50 bg-accent-soft/45 p-5 sm:p-6 md:border-t-0 md:border-l">
           <h3 className="text-sm font-semibold">{t("Antes de admitir")}</h3>
           <ul className="mt-3 space-y-3 text-sm text-muted-foreground">
             <li className="flex gap-2">

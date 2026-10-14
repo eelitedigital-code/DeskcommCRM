@@ -295,7 +295,7 @@ export function ExtensionGuide({
               data-testid={`extension-guide-card-${card.id}`}
               className={`scroll-mt-6 rounded-xl border bg-surface shadow-xs ${
                 card.id === selectedCardId
-                  ? "border-accent ring-1 ring-accent-200"
+                  ? "border-accent ring-1 ring-accent/50"
                   : "border-border"
               } ${compact ? "p-4" : "p-5 sm:p-6"}`}
             >
@@ -320,7 +320,7 @@ export function ExtensionGuide({
                   return (
                     <section
                       key={`${card.id}:${index}`}
-                      className="border-l-2 border-accent-200 pl-4"
+                      className="border-l-2 border-accent/50 pl-4"
                     >
                       <h3 className="text-sm font-semibold">{heading.text}</h3>
                       <p className="mt-1 text-sm leading-relaxed whitespace-pre-line text-muted-foreground">
