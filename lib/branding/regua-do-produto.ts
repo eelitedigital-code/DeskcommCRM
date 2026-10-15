@@ -42,15 +42,15 @@ export const REGUA_DO_PRODUTO: Regua = {
     base: [
       {
         chave: "--color-bg",
-        hex: "#ffffff"
+        hex: "#f9fbfe"
       },
       {
         chave: "--color-surface",
-        hex: "#e6e8e6"
+        hex: "#e4e8ee"
       },
       {
         chave: "--color-surface-elevated",
-        hex: "#cdcfcd"
+        hex: "#c9cfd7"
       }
     ],
     tingidas: [
@@ -159,17 +159,17 @@ export const REGUA_DO_PRODUTO: Regua = {
       }
     ],
     neutros: [
-      "#f8faf8",
-      "#f0f2f0",
-      "#e2e4e2",
-      "#cccecc",
-      "#a2a4a2",
-      "#777977",
-      "#585a58",
-      "#424442",
-      "#2b2c2b",
-      "#191b19",
-      "#0c0d0c"
+      "#f6faff",
+      "#eef2f7",
+      "#e0e4e9",
+      "#caced3",
+      "#a0a4a8",
+      "#75797d",
+      "#565a5e",
+      "#414448",
+      "#292c30",
+      "#181b1e",
+      "#0a0d10"
     ],
     indices: {
       accent: 6,
