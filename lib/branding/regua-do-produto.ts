@@ -42,24 +42,24 @@ export const REGUA_DO_PRODUTO: Regua = {
     base: [
       {
         chave: "--color-bg",
-        hex: "#f9f8f5"
+        hex: "#ffffff"
       },
       {
         chave: "--color-surface",
-        hex: "#eae7df"
+        hex: "#e6e8e6"
       },
       {
         chave: "--color-surface-elevated",
-        hex: "#d3cec2"
+        hex: "#cdcfcd"
       }
     ],
     tingidas: [
       {
         chave: "--color-accent-soft",
         fonte: {
-          tipo: "grau",
-          indice: 1,
-          alfa: 1
+          tipo: "literal",
+          hex: "#506d48",
+          alfa: 0.14
         }
       }
     ],
@@ -159,39 +159,39 @@ export const REGUA_DO_PRODUTO: Regua = {
       }
     ],
     neutros: [
-      "#faf9f6",
-      "#f3f1ec",
-      "#e7e3da",
-      "#d2cdbf",
-      "#a9a395",
-      "#7d786c",
-      "#5d594f",
-      "#46433b",
-      "#2e2c26",
-      "#1c1a16",
-      "#0e0d0a"
+      "#f8faf8",
+      "#f0f2f0",
+      "#e2e4e2",
+      "#cccecc",
+      "#a2a4a2",
+      "#777977",
+      "#585a58",
+      "#424442",
+      "#2b2c2b",
+      "#191b19",
+      "#0c0d0c"
     ],
     indices: {
       accent: 6,
       hover: 7,
-      soft: 1
+      soft: null
     },
-    alfaDoSoft: 1
+    alfaDoSoft: 0.14
   },
   escuro: {
     nome: "escuro",
     base: [
       {
         chave: "--color-bg",
-        hex: "#111010"
+        hex: "#101110"
       },
       {
         chave: "--color-surface",
-        hex: "#22211d"
+        hex: "#202120"
       },
       {
         chave: "--color-surface-elevated",
-        hex: "#2e2c26"
+        hex: "#2b2d2b"
       }
     ],
     tingidas: [
@@ -300,17 +300,17 @@ export const REGUA_DO_PRODUTO: Regua = {
       }
     ],
     neutros: [
-      "#f5f4ef",
-      "#e6e4dc",
-      "#bbb8ac",
-      "#8e8b7f",
-      "#605e54",
-      "#444239",
-      "#33312a",
-      "#272620",
-      "#1d1c17",
-      "#161510",
-      "#0c0b08"
+      "#f3f4f3",
+      "#e3e4e3",
+      "#b7b8b7",
+      "#8a8b8a",
+      "#5d5e5d",
+      "#414241",
+      "#303130",
+      "#252625",
+      "#1b1c1b",
+      "#141514",
+      "#0a0b0a"
     ],
     indices: {
       accent: 4,

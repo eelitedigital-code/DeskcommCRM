@@ -32,21 +32,21 @@
 
 :root {
   /* Surfaces (light) */
-  --color-bg: #f9f8f5;
-  --color-surface: #eae7df;
-  --color-surface-elevated: #d3cec2;
-  --color-surface-muted: #dfdbd1;
-  --color-surface-sunken: #eeebe4;
-  --color-overlay: rgba(28, 26, 22, 0.42);
+  --color-bg: #ffffff;
+  --color-surface: #e6e8e6;
+  --color-surface-elevated: #cdcfcd;
+  --color-surface-muted: #dadcda;
+  --color-surface-sunken: #eaecea;
+  --color-overlay: rgba(24, 26, 24, 0.42);
 
   /* Text (light) */
-  --color-text: #1c1a16;
-  --color-text-muted: #3f3c35;
-  --color-text-subtle: #55524a;
+  --color-text: #1a1b1a;
+  --color-text-muted: #3b3d3b;
+  --color-text-subtle: #515351;
 
   /* Borders (light) */
-  --color-border: #aaa495;
-  --color-border-strong: #958f80;
+  --color-border: #a3a5a3;
+  --color-border-strong: #8d908d;
 
   /* Accent — Sage (11 stops) */
   --color-accent-50: #f3f6f1;
@@ -62,21 +62,21 @@
   --color-accent-950: #171f15;
   --color-accent: var(--color-accent-600);
   --color-accent-fg: #ffffff;
-  --color-accent-soft: var(--color-accent-100);
+  --color-accent-soft: rgba(80, 109, 72, 0.14);
   --color-accent-hover: var(--color-accent-700);
 
   /* Neutrals — greige (11 stops, light) */
-  --color-neutral-50: #faf9f6;
-  --color-neutral-100: #f3f1ec;
-  --color-neutral-200: #e7e3da;
-  --color-neutral-300: #d2cdbf;
-  --color-neutral-400: #a9a395;
-  --color-neutral-500: #7d786c;
-  --color-neutral-600: #5d594f;
-  --color-neutral-700: #46433b;
-  --color-neutral-800: #2e2c26;
-  --color-neutral-900: #1c1a16;
-  --color-neutral-950: #0e0d0a;
+  --color-neutral-50: #f8faf8;
+  --color-neutral-100: #f0f2f0;
+  --color-neutral-200: #e2e4e2;
+  --color-neutral-300: #cccecc;
+  --color-neutral-400: #a2a4a2;
+  --color-neutral-500: #777977;
+  --color-neutral-600: #585a58;
+  --color-neutral-700: #424442;
+  --color-neutral-800: #2b2c2b;
+  --color-neutral-900: #191b19;
+  --color-neutral-950: #0c0d0c;
 
   /* States (light) */
   --color-success: #5a8a5f;
@@ -265,32 +265,32 @@
    (lib/branding/css.ts), que só ganha consumidor com a tela de marca.
    ───────────────────────────────────────────────────────────────────────── */
 [data-theme="light"] {
-  --color-bg: #f9f8f5;
-  --color-surface: #eae7df;
-  --color-surface-elevated: #d3cec2;
-  --color-surface-muted: #dfdbd1;
-  --color-surface-sunken: #eeebe4;
-  --color-overlay: rgba(28, 26, 22, 0.42);
-  --color-text: #1c1a16;
-  --color-text-muted: #3f3c35;
-  --color-text-subtle: #55524a;
-  --color-border: #aaa495;
-  --color-border-strong: #958f80;
+  --color-bg: #ffffff;
+  --color-surface: #e6e8e6;
+  --color-surface-elevated: #cdcfcd;
+  --color-surface-muted: #dadcda;
+  --color-surface-sunken: #eaecea;
+  --color-overlay: rgba(24, 26, 24, 0.42);
+  --color-text: #1a1b1a;
+  --color-text-muted: #3b3d3b;
+  --color-text-subtle: #515351;
+  --color-border: #a3a5a3;
+  --color-border-strong: #8d908d;
   --color-accent: var(--color-accent-600);
   --color-accent-fg: #ffffff;
-  --color-accent-soft: var(--color-accent-100);
+  --color-accent-soft: rgba(80, 109, 72, 0.14);
   --color-accent-hover: var(--color-accent-700);
-  --color-neutral-50: #faf9f6;
-  --color-neutral-100: #f3f1ec;
-  --color-neutral-200: #e7e3da;
-  --color-neutral-300: #d2cdbf;
-  --color-neutral-400: #a9a395;
-  --color-neutral-500: #7d786c;
-  --color-neutral-600: #5d594f;
-  --color-neutral-700: #46433b;
-  --color-neutral-800: #2e2c26;
-  --color-neutral-900: #1c1a16;
-  --color-neutral-950: #0e0d0a;
+  --color-neutral-50: #f8faf8;
+  --color-neutral-100: #f0f2f0;
+  --color-neutral-200: #e2e4e2;
+  --color-neutral-300: #cccecc;
+  --color-neutral-400: #a2a4a2;
+  --color-neutral-500: #777977;
+  --color-neutral-600: #585a58;
+  --color-neutral-700: #424442;
+  --color-neutral-800: #2b2c2b;
+  --color-neutral-900: #191b19;
+  --color-neutral-950: #0c0d0c;
   --color-success: #5a8a5f;
   --color-success-bg: rgba(90, 138, 95, 0.12);
   --color-success-fg: #355834;
@@ -345,21 +345,21 @@
 
 [data-theme="dark"] {
   /* Surfaces (dark — drawn) */
-  --color-bg: #111010;
-  --color-surface: #22211d;
-  --color-surface-elevated: #2e2c26;
-  --color-surface-muted: #2a2823;
-  --color-surface-sunken: #1a1916;
+  --color-bg: #101110;
+  --color-surface: #202120;
+  --color-surface-elevated: #2b2d2b;
+  --color-surface-muted: #272927;
+  --color-surface-sunken: #181918;
   --color-overlay: rgba(0, 0, 0, 0.55);
 
   /* Text (dark) */
-  --color-text: #f5f4ef;
-  --color-text-muted: #c9c6ba;
-  --color-text-subtle: #a6a295;
+  --color-text: #f3f4f3;
+  --color-text-muted: #c5c6c5;
+  --color-text-subtle: #a1a3a1;
 
   /* Borders (dark) */
-  --color-border: #4d4a41;
-  --color-border-strong: #666256;
+  --color-border: #494b49;
+  --color-border-strong: #606360;
 
   /* Accent stays same hex stops; default shifts up for dark contrast */
   --color-accent-50: #f3f6f1;
@@ -379,17 +379,17 @@
   --color-accent-hover: var(--color-accent-300);
 
   /* Neutrals — greige (11 stops, dark) */
-  --color-neutral-50: #f5f4ef;
-  --color-neutral-100: #e6e4dc;
-  --color-neutral-200: #bbb8ac;
-  --color-neutral-300: #8e8b7f;
-  --color-neutral-400: #605e54;
-  --color-neutral-500: #444239;
-  --color-neutral-600: #33312a;
-  --color-neutral-700: #272620;
-  --color-neutral-800: #1d1c17;
-  --color-neutral-900: #161510;
-  --color-neutral-950: #0c0b08;
+  --color-neutral-50: #f3f4f3;
+  --color-neutral-100: #e3e4e3;
+  --color-neutral-200: #b7b8b7;
+  --color-neutral-300: #8a8b8a;
+  --color-neutral-400: #5d5e5d;
+  --color-neutral-500: #414241;
+  --color-neutral-600: #303130;
+  --color-neutral-700: #252625;
+  --color-neutral-800: #1b1c1b;
+  --color-neutral-900: #141514;
+  --color-neutral-950: #0a0b0a;
 
   /* States (dark) */
   --color-success: #82a077;
