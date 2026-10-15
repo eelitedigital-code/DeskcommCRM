@@ -32,21 +32,21 @@
 
 :root {
   /* Surfaces (light) */
-  --color-bg: #ffffff;
-  --color-surface: #e6e8e6;
-  --color-surface-elevated: #cdcfcd;
-  --color-surface-muted: #dadcda;
-  --color-surface-sunken: #eaecea;
+  --color-bg: #f9fbfe;
+  --color-surface: #e4e8ee;
+  --color-surface-elevated: #c9cfd7;
+  --color-surface-muted: #d7dce3;
+  --color-surface-sunken: #e8ecf0;
   --color-overlay: rgba(24, 26, 24, 0.42);
 
   /* Text (light) */
-  --color-text: #1a1b1a;
-  --color-text-muted: #3b3d3b;
-  --color-text-subtle: #515351;
+  --color-text: #171b20;
+  --color-text-muted: #383d44;
+  --color-text-subtle: #4d535b;
 
   /* Borders (light) */
-  --color-border: #a3a5a3;
-  --color-border-strong: #8d908d;
+  --color-border: #9ea5af;
+  --color-border-strong: #88909a;
 
   /* Accent — Sage (11 stops) */
   --color-accent-50: #f3f6f1;
@@ -66,17 +66,17 @@
   --color-accent-hover: var(--color-accent-700);
 
   /* Neutrals — greige (11 stops, light) */
-  --color-neutral-50: #f8faf8;
-  --color-neutral-100: #f0f2f0;
-  --color-neutral-200: #e2e4e2;
-  --color-neutral-300: #cccecc;
-  --color-neutral-400: #a2a4a2;
-  --color-neutral-500: #777977;
-  --color-neutral-600: #585a58;
-  --color-neutral-700: #424442;
-  --color-neutral-800: #2b2c2b;
-  --color-neutral-900: #191b19;
-  --color-neutral-950: #0c0d0c;
+  --color-neutral-50: #f6faff;
+  --color-neutral-100: #eef2f7;
+  --color-neutral-200: #e0e4e9;
+  --color-neutral-300: #caced3;
+  --color-neutral-400: #a0a4a8;
+  --color-neutral-500: #75797d;
+  --color-neutral-600: #565a5e;
+  --color-neutral-700: #414448;
+  --color-neutral-800: #292c30;
+  --color-neutral-900: #181b1e;
+  --color-neutral-950: #0a0d10;
 
   /* States (light) */
   --color-success: #5a8a5f;
@@ -265,32 +265,32 @@
    (lib/branding/css.ts), que só ganha consumidor com a tela de marca.
    ───────────────────────────────────────────────────────────────────────── */
 [data-theme="light"] {
-  --color-bg: #ffffff;
-  --color-surface: #e6e8e6;
-  --color-surface-elevated: #cdcfcd;
-  --color-surface-muted: #dadcda;
-  --color-surface-sunken: #eaecea;
+  --color-bg: #f9fbfe;
+  --color-surface: #e4e8ee;
+  --color-surface-elevated: #c9cfd7;
+  --color-surface-muted: #d7dce3;
+  --color-surface-sunken: #e8ecf0;
   --color-overlay: rgba(24, 26, 24, 0.42);
-  --color-text: #1a1b1a;
-  --color-text-muted: #3b3d3b;
-  --color-text-subtle: #515351;
-  --color-border: #a3a5a3;
-  --color-border-strong: #8d908d;
+  --color-text: #171b20;
+  --color-text-muted: #383d44;
+  --color-text-subtle: #4d535b;
+  --color-border: #9ea5af;
+  --color-border-strong: #88909a;
   --color-accent: var(--color-accent-600);
   --color-accent-fg: #ffffff;
   --color-accent-soft: rgba(80, 109, 72, 0.14);
   --color-accent-hover: var(--color-accent-700);
-  --color-neutral-50: #f8faf8;
-  --color-neutral-100: #f0f2f0;
-  --color-neutral-200: #e2e4e2;
-  --color-neutral-300: #cccecc;
-  --color-neutral-400: #a2a4a2;
-  --color-neutral-500: #777977;
-  --color-neutral-600: #585a58;
-  --color-neutral-700: #424442;
-  --color-neutral-800: #2b2c2b;
-  --color-neutral-900: #191b19;
-  --color-neutral-950: #0c0d0c;
+  --color-neutral-50: #f6faff;
+  --color-neutral-100: #eef2f7;
+  --color-neutral-200: #e0e4e9;
+  --color-neutral-300: #caced3;
+  --color-neutral-400: #a0a4a8;
+  --color-neutral-500: #75797d;
+  --color-neutral-600: #565a5e;
+  --color-neutral-700: #414448;
+  --color-neutral-800: #292c30;
+  --color-neutral-900: #181b1e;
+  --color-neutral-950: #0a0d10;
   --color-success: #5a8a5f;
   --color-success-bg: rgba(90, 138, 95, 0.12);
   --color-success-fg: #355834;
