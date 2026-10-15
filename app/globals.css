@@ -32,11 +32,11 @@
 
 :root {
   /* Surfaces (light) */
-  --color-bg: #f9fbfe;
-  --color-surface: #e4e8ee;
-  --color-surface-elevated: #c9cfd7;
-  --color-surface-muted: #d7dce3;
-  --color-surface-sunken: #e8ecf0;
+  --color-bg: #f1f4f8;
+  --color-surface: #ffffff;
+  --color-surface-elevated: #d8dee6;
+  --color-surface-muted: #e3e8ee;
+  --color-surface-sunken: #e8ecf1;
   --color-overlay: rgba(24, 26, 24, 0.42);
 
   /* Text (light) */
@@ -45,8 +45,8 @@
   --color-text-subtle: #4d535b;
 
   /* Borders (light) */
-  --color-border: #9ea5af;
-  --color-border-strong: #88909a;
+  --color-border: #b9c0ca;
+  --color-border-strong: #8e97a3;
 
   /* Accent — Sage (11 stops) */
   --color-accent-50: #f3f6f1;
@@ -265,17 +265,17 @@
    (lib/branding/css.ts), que só ganha consumidor com a tela de marca.
    ───────────────────────────────────────────────────────────────────────── */
 [data-theme="light"] {
-  --color-bg: #f9fbfe;
-  --color-surface: #e4e8ee;
-  --color-surface-elevated: #c9cfd7;
-  --color-surface-muted: #d7dce3;
-  --color-surface-sunken: #e8ecf0;
+  --color-bg: #f1f4f8;
+  --color-surface: #ffffff;
+  --color-surface-elevated: #d8dee6;
+  --color-surface-muted: #e3e8ee;
+  --color-surface-sunken: #e8ecf1;
   --color-overlay: rgba(24, 26, 24, 0.42);
   --color-text: #171b20;
   --color-text-muted: #383d44;
   --color-text-subtle: #4d535b;
-  --color-border: #9ea5af;
-  --color-border-strong: #88909a;
+  --color-border: #b9c0ca;
+  --color-border-strong: #8e97a3;
   --color-accent: var(--color-accent-600);
   --color-accent-fg: #ffffff;
   --color-accent-soft: rgba(80, 109, 72, 0.14);
