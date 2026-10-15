@@ -244,28 +244,47 @@ const CK = CURVA_C[K];
  * a ponta clara perderia a separação entre 50 e 100. Dois segmentos preservam a forma
  * relativa de cada metade e movem só a articulação.
  */
-function lightnessDoStop(indice: number, Lsemente: number): number {
-  const L = ESCADA_L[indice] ?? LK;
-  return indice <= K
-    ? L0 + (L - L0) * ((Lsemente - L0) / (LK - L0))
-    : Lsemente + (L - LK) * ((L10 - Lsemente) / (L10 - LK));
+function lightnessDoStop(indice: number, Lsemente: number, k: number = K): number {
+  const Lk = ESCADA_L[k] ?? LK;
+  const L = ESCADA_L[indice] ?? Lk;
+  return indice <= k
+    ? L0 + (L - L0) * ((Lsemente - L0) / (Lk - L0))
+    : Lsemente + (L - Lk) * ((L10 - Lsemente) / (L10 - Lk));
+}
+
+/**
+ * Stop onde uma semente CLARA se ancora: o 400, accent do tema escuro.
+ *
+ * Elite: ancorar `#32e24f` (L 0,80) no 600 espremia os stops 700–950 entre 0,80 e
+ * 0,23 em quatro passos; o tema claro precisava andar 3–4 stops para ter contraste
+ * e as pontas colapsavam em `#002404` (accent e hover iguais, soft neon). Uma cor
+ * clara É uma cor de tema escuro: ancorada no 400, o escuro pinta o hex literal e
+ * o claro anda pela metade escura da rampa, que agora tem seis degraus distintos.
+ * Sementes até o 500 (Sage, navy, toda marca de L média ou baixa) seguem no 600,
+ * byte a byte como antes.
+ */
+export const K_SEMENTE_CLARA = 4;
+const LIMIAR_SEMENTE_CLARA = ESCADA_L[5];
+
+export function indiceDaSemente(semente: string): number {
+  return hexParaOklch(semente).L > LIMIAR_SEMENTE_CLARA ? K_SEMENTE_CLARA : K;
 }
 
 /**
  * Deriva os 11 stops a partir do hex da marca.
  *
- * O stop K recebe o hex LITERAL no fim, e não o resultado da ida-e-volta por OKLab:
+ * O stop da semente recebe o hex LITERAL no fim, e não o resultado da ida-e-volta por OKLab:
  * a conversão erra ±1/255 por arredondamento, e o seletor de cor mostraria ao cliente
  * uma cor que a UI não usa. Um pixel de diferença ninguém vê; a desconfiança de ver
  * `#506d48` no campo e `#516d49` na tela custa caro.
  */
-export function rampaDeSemente(semente: string): Rampa {
+export function rampaDeSemente(semente: string, k: number = indiceDaSemente(semente)): Rampa {
   const { L: Ls, C: Cs, h } = hexParaOklch(semente);
-  const C0 = Cs / CK;
+  const C0 = Cs / (CURVA_C[k] ?? CK);
   const stops = ESCADA_L.map((_, i) =>
-    oklchParaHex({ L: lightnessDoStop(i, Ls), C: C0 * (CURVA_C[i] ?? 1), h }),
+    oklchParaHex({ L: lightnessDoStop(i, Ls, k), C: C0 * (CURVA_C[i] ?? 1), h }),
   );
-  stops[K] = normalizarHex(semente);
+  stops[k] = normalizarHex(semente);
   return stops as unknown as Rampa;
 }
 
