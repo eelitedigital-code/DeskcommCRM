@@ -306,6 +306,8 @@ export const AUDIT_ACTIONS = [
   // Mudar a régua do abandono (spec 16 §5.2) muda como TODO período passa a ser
   // lido — é mutação relevante, não preferência de exibição.
   "metrics.atrito_regua_changed",
+  // Spec 04 (fork Elite): a régua do Dashboard de Atendimento (limiares, 24 h com IA, rótulos de origem).
+  "painel_atendimento.configuracao_alterada",
   // O invariante 4 deixando de ser só leitura: quem marcou o próximo passo de
   // uma demanda, e qual. Sem isto, a única mutação que fecha o vazamento seria
   // a única sem rastro.
