@@ -27,6 +27,7 @@ import { createDefaultRegistry } from "@/lib/agent-engine/edge/llm/providers";
 import { createPool } from "@/lib/agent-engine/db/pool";
 import { env } from "@/lib/env";
 import type { EventRow, HandlerResult } from "@/lib/event-log/dispatcher";
+import { avisarIaSemChave, ehFaltaDeChaveDeIa } from "@/lib/event-log/ia-sem-chave";
 import { deriveMediaText, type DeriveDeps } from "@/lib/messaging/media/derive";
 import { MARCADOR_NAO_LIDA, TIPOS_DERIVAVEIS } from "@/lib/messaging/media/derivable";
 import { deriveVideoText } from "@/lib/messaging/media/video-derive";
@@ -463,6 +464,19 @@ export async function deriveMessageMedia(row: EventRow): Promise<HandlerResult> 
     return { consumer_key, status: "ok" };
   } catch (err) {
     const detail = err instanceof Error ? err.message : String(err);
+    // ─── SEM CHAVE DE IA NÃO É FALHA: É FALTA DE CONFIGURAÇÃO ──────────────
+    //
+    // Tentar de novo não resolve — não há chave —, e esgotar as 5 tentativas
+    // abria o aviso CRÍTICO de evento morto mais o de mídia não lida, a cada
+    // foto ou áudio de cliente. Agora: marca o arquivo como não lido JÁ (o
+    // agente recebe o marcador e avisa o cliente em vez de supor), abre UM aviso
+    // de atenção por organização (`lib/event-log/ia-sem-chave.ts`) e encerra o
+    // evento como `skipped`, com o motivo guardado em `last_error`.
+    if (ehFaltaDeChaveDeIa(err)) {
+      await markFailed(`sem chave de IA configurada para ler a ${rotuloDoTipo}`);
+      await avisarIaSemChave(admin, msg.organization_id, detail.slice(0, 200));
+      return { consumer_key, status: "skipped", detail: "sem_chave_de_ia" };
+    }
     if (row.attempts >= DRAIN_MAX_ATTEMPTS - 1) {
       logger.error("[media-derive] failed permanently", { message_id: msg.id, detail });
       await markFailed(

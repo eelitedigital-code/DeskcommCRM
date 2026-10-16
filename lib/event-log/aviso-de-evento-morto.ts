@@ -59,6 +59,16 @@
  * mostra e o que distingue as famílias; se ele mudar de redação, o aviso aberto
  * com o texto antigo deixa de deduplicar UMA vez, e o efeito é um aviso a mais,
  * nunca um a menos.
+ *
+ * ═══ A FAMÍLIA QUE NÃO É FALHA: IA SEM CHAVE ═══
+ *
+ * Quando o motivo da morte é a falta de credencial de IA (`LlmNotConfiguredError`),
+ * nenhum dos dois drenos abre este aviso crítico: abre-se o de ATENÇÃO de
+ * `lib/event-log/ia-sem-chave.ts`, um só por organização (mesmo `kind`
+ * `event_dead`, título fixo `IA_SEM_CHAVE.titulo`, mesmo índice único). O dreno
+ * de handlers o exclui do seu dedupe genérico, como exclui as famílias acima —
+ * um aviso de configuração aberto não pode calar uma falha de verdade. E a
+ * mesma regra da redação vale: mudar aquele título abre um aviso a mais, uma vez.
  */
 
 /**

@@ -12,6 +12,7 @@ import {
   MENSAGEM_QUE_NAO_ENTROU,
 } from "@/lib/event-log/aviso-de-evento-morto";
 import { dispatchEvent, getRegisteredHandlers, type EventRow } from "@/lib/event-log/dispatcher";
+import { IA_SEM_CHAVE, avisarIaSemChave, ehFaltaDeChaveDeIa } from "@/lib/event-log/ia-sem-chave";
 import { logger } from "@/lib/logger";
 import { ehOperante } from "@/lib/organizacao/operante";
 
@@ -96,6 +97,9 @@ export async function avisarEventoMorto(
       .eq("status", "open")
       .neq("title", IA_QUE_NAO_RESPONDEU.titulo)
       .neq("title", MENSAGEM_QUE_NAO_ENTROU.titulo)
+      // O aviso calmo de IA sem chave é outra família (`ia-sem-chave.ts`):
+      // aberto, ele não pode calar uma falha de verdade de outro processamento.
+      .neq("title", IA_SEM_CHAVE.titulo)
       .limit(1)
       .maybeSingle();
     if (jaAberto) return;
@@ -459,7 +463,15 @@ export async function drainEventLog(
           updated_at: new Date().toISOString(),
         })
         .eq("id", row.id);
-      if (dead) await avisarEventoMorto(admin, row, motivo);
+      if (dead) {
+        // Morreu por FALTA DE CHAVE de IA: é configuração, não falha — um
+        // aviso de atenção por organização, nunca o crítico por evento.
+        if (errors.some((e) => ehFaltaDeChaveDeIa(e.detail ?? ""))) {
+          await avisarIaSemChave(admin, row.organization_id, motivo);
+        } else {
+          await avisarEventoMorto(admin, row, motivo);
+        }
+      }
       summary[dead ? "dead" : "failed"] += 1;
     } else {
       // O MOTIVO DE UM `skipped` SOBREVIVE À LINHA.

@@ -21,6 +21,7 @@ import type { Logger } from '../../obs/logger';
 import { enqueueJob } from '../../queue/queue';
 import { decidirRajada, debounceEfetivo } from './debounce';
 import { avisoDeEventoMorto, IA_QUE_NAO_RESPONDEU } from '@/lib/event-log/aviso-de-evento-morto';
+import { avisarIaSemChavePeloPool, ehFaltaDeChaveDeIa } from '@/lib/event-log/ia-sem-chave';
 import { canalDesativado } from '@/lib/channels/desativado';
 import { TIPOS_DERIVAVEIS, DERIVACAO_TERMINADA } from '@/lib/messaging/media/derivable';
 import { haQuemAtendaASessao } from '@/lib/ai/agents/quem-atende-a-sessao';
@@ -127,7 +128,12 @@ export async function drainTick(pool: pg.Pool, knobs: DrainKnobs, log: Logger): 
         [event.id, terminal ? 'dead' : 'pending', message],
       );
       log.error('drain: evento falhou', { event_id: event.id, terminal, error: message });
-      if (terminal) await avisarDespachoMorto(pool, event, message, log);
+      if (terminal) {
+        // Sem chave de IA não é falha grave: um aviso de ATENÇÃO por
+        // organização (`lib/event-log/ia-sem-chave.ts`), nunca o crítico.
+        if (ehFaltaDeChaveDeIa(message)) await avisarIaSemChavePeloPool(pool, event.organization_id, message);
+        else await avisarDespachoMorto(pool, event, message, log);
+      }
     }
   }
   return events.length;

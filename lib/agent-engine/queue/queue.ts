@@ -310,6 +310,12 @@ export async function failJob(
   workerId: string,
   error: unknown,
   acquiredAt?: string,
+  /**
+   * `false` = ao morrer, NÃO abre o `job_dead` crítico. Para quem morre por
+   * falta de configuração (IA sem chave), que tem aviso próprio, de atenção e
+   * único por organização (`lib/event-log/ia-sem-chave.ts`). Padrão: abre.
+   */
+  opts: { avisoCritico?: boolean } = {},
 ): Promise<JobRow | null> {
   const { rows } = await db.query<JobRow>(
     `with updated as (
@@ -336,10 +342,10 @@ export async function failJob(
                 || coalesce(chr(10) || 'Motivo: ' || left(last_error, 400), ''),
               'job_queue', id
        from updated
-       where status = 'dead'
+       where status = 'dead' and $5::boolean
      )
      select * from updated`,
-    [jobId, workerId, normalizeError(error), acquiredAt ?? null],
+    [jobId, workerId, normalizeError(error), acquiredAt ?? null, opts.avisoCritico ?? true],
   );
   return rows[0] ?? null;
 }
