@@ -3,6 +3,7 @@ import { NavHub } from "@/components/shell/NavHub";
 import { requireAuth, resolveActiveOrg } from "@/lib/auth/server";
 import { traduzir } from "@/lib/i18n/dicionario";
 import { modulosLigados } from "@/lib/instalacao/modulos";
+import { capacidadesDaOrganizacao } from "@/lib/organizacao/capacidades";
 import { createAdminClient } from "@/lib/supabase/admin";
 
 export const dynamic = "force-dynamic";
@@ -38,6 +39,12 @@ export default async function SettingsHubPage() {
       interfaceSettings={activeOrg?.interface_settings}
       // A porta do banco externo mora neste hub, e só existe com o módulo ligado.
       modulosLigados={await modulosLigados(createAdminClient())}
+      // E as capacidades que a EMPRESA ligou: sem elas o hub não filtra por
+      // capacidade e mostrava "Campos da empresa" com Empresas desligado — uma
+      // porta que dava 403.
+      capacidadesLigadas={
+        activeOrg ? await capacidadesDaOrganizacao(createAdminClient(), activeOrg.orgId) : []
+      }
       title={traduzir("Configurações", idioma)}
       subtitle={traduzir("Sua conta, os dados da empresa e quem tem acesso ao quê.", idioma)}
       locale={idioma}
