@@ -21,7 +21,7 @@ export function CanaisDeLeads({ quadro }: { quadro: QuadroDeCanais }) {
   const maior = Math.max(1, ...quadro.canais.map((c) => c.atual));
 
   return (
-    <Card>
+    <Card data-testid="canal-com-mais-leads">
       <CardHeader className="pb-2">
         <CardTitle className="text-base">{t("Canal com mais leads")}</CardTitle>
         <p className="text-xs text-muted-foreground">{t("Contatos novos no período, pela origem gravada no contato")}</p>

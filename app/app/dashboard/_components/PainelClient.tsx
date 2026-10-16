@@ -198,7 +198,7 @@ export function PainelClient({ gerente, userId }: Props) {
           ) : null}
 
           {painel.vazio ? (
-            <Card>
+            <Card data-testid="painel-vazio">
               <CardContent className="py-10 text-center text-sm text-muted-foreground">
                 {t("Nenhuma mensagem neste período. Escolha outro período ou outro número.")}
               </CardContent>

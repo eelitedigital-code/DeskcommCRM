@@ -30,7 +30,7 @@ export function IaXPessoa({ painel }: { painel: RespostaDoPainel }) {
   const pctIa = total > 0 ? Math.round((bloco.ia.pares / total) * 100) : 0;
 
   return (
-    <Card>
+    <Card data-testid="ia-x-pessoa">
       <CardHeader className="pb-2">
         <CardTitle className="text-base">{t("IA x Pessoa")}</CardTitle>
         <p className="text-xs text-muted-foreground">{t("Quem respondeu o cliente no período")}</p>
@@ -113,7 +113,7 @@ export function TabelaPorNumero({ painel }: { painel: RespostaDoPainel }) {
   const linhas = painel.por_numero;
 
   return (
-    <Card>
+    <Card data-testid="por-numero">
       <CardHeader className="pb-2">
         <CardTitle className="text-base">{t("Por número de WhatsApp")}</CardTitle>
       </CardHeader>
@@ -167,7 +167,7 @@ export function TabelaPorAtendente({ painel, gerente }: { painel: RespostaDoPain
   const linhas = painel.por_atendente;
 
   return (
-    <Card>
+    <Card data-testid="por-atendente">
       <CardHeader className="pb-2">
         <CardTitle className="text-base">{t("Por atendente")}</CardTitle>
         {!gerente ? <p className="text-xs text-muted-foreground">{t("Você vê a sua linha e a da IA.")}</p> : null}

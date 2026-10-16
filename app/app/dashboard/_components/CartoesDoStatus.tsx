@@ -45,24 +45,26 @@ function Variacao({ valor, menorEMelhor = false }: { valor: number | null; menor
 }
 
 function Cartao({
+  id,
   titulo,
   selo,
   destaque,
   children,
 }: {
+  id: string;
   titulo: string;
   selo?: Selo | null;
   destaque: string;
   children?: React.ReactNode;
 }) {
   return (
-    <Card>
+    <Card data-testid={`cartao-${id}`} data-selo={selo ?? ""}>
       <CardContent className="flex flex-col gap-2 p-4">
         <div className="flex items-start justify-between gap-2">
           <span className="text-sm text-muted-foreground">{titulo}</span>
           <SeloDoPainel selo={selo ?? null} />
         </div>
-        <span className="text-3xl font-semibold tabular-nums">{destaque}</span>
+        <span className="text-3xl font-semibold tabular-nums" data-testid="destaque">{destaque}</span>
         <div className="flex flex-col gap-0.5 text-xs text-muted-foreground">{children}</div>
       </CardContent>
     </Card>
@@ -77,27 +79,27 @@ export function CartoesDoStatus({ painel }: { painel: RespostaDoPainel }) {
 
   return (
     <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-      <Cartao titulo={t("Mensagens recebidas")} destaque={n(c.mensagens.recebidas)}>
+      <Cartao id="mensagens" titulo={t("Mensagens recebidas")} destaque={n(c.mensagens.recebidas)}>
         <span>
           {n(c.mensagens.enviadas)} {t("enviadas")}
         </span>
         <Variacao valor={c.mensagens.variacao_recebidas} />
       </Cartao>
 
-      <Cartao titulo={t("Tempo médio de resposta")} selo={c.tempo_de_resposta.selo} destaque={formatarDuracao(c.tempo_de_resposta.media_s)}>
+      <Cartao id="tempo" titulo={t("Tempo médio de resposta")} selo={c.tempo_de_resposta.selo} destaque={formatarDuracao(c.tempo_de_resposta.media_s)}>
         <span>
           {t("Mediana")}: {formatarDuracao(c.tempo_de_resposta.mediana_s)} · {t("1ª resposta")}: {formatarDuracao(c.tempo_de_resposta.primeira_resposta_s)}
         </span>
         <Variacao valor={c.tempo_de_resposta.variacao_media} menorEMelhor />
       </Cartao>
 
-      <Cartao titulo={t("Conversas ativas agora")} destaque={n(c.conversas.ativas)}>
+      <Cartao id="conversas" titulo={t("Conversas ativas agora")} destaque={n(c.conversas.ativas)}>
         <span>
           {n(c.conversas.aguardando)} {t("aguardando resposta")}
         </span>
       </Cartao>
 
-      <Cartao titulo={t("Espera acima do limite")} selo={c.espera.selo} destaque={n(c.espera.acima_do_limite)}>
+      <Cartao id="espera" titulo={t("Espera acima do limite")} selo={c.espera.selo} destaque={n(c.espera.acima_do_limite)}>
         <span>
           {t("Limite")}: {c.espera.limite_min} min
         </span>
