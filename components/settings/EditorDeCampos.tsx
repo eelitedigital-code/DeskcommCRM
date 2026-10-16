@@ -51,6 +51,25 @@ import { Plus, Trash } from "@/lib/ui/icons";
  */
 export const TIPOS_DE_CAMPO = customFieldSchema.shape.type.options;
 
+/**
+ * O NOME DO TIPO PARA QUEM NÃO É TÉCNICO. O seletor mostrava a chave do schema
+ * (`text`, `multiselect`…), e quem monta os campos de um cliente não precisa
+ * saber inglês nem o que é "select". O valor gravado continua sendo a chave.
+ */
+export const ROTULO_DO_TIPO: Record<CustomFieldDef["type"], string> = {
+  text: "Texto curto",
+  textarea: "Texto longo",
+  number: "Número",
+  currency: "Moeda (BRL)",
+  date: "Data",
+  select: "Lista (uma opção)",
+  multiselect: "Lista (várias opções)",
+  boolean: "Sim ou não",
+  email: "E-mail",
+  phone: "Telefone",
+  url: "Link",
+};
+
 /** Tipos cujo valor sai de uma lista fechada — são os que mostram o campo de opções. */
 export function tipoTemOpcoes(tipo: CustomFieldDef["type"]): boolean {
   return tipo === "select" || tipo === "multiselect";
@@ -290,7 +309,7 @@ export function EditorDeCampos({ fields, onChange, etapas }: PropsDoEditor) {
             <SelectContent>
               {TIPOS_DE_CAMPO.map((tipo) => (
                 <SelectItem key={tipo} value={tipo}>
-                  {tipo === "currency" ? t("Moeda (BRL)") : tipo}
+                  {t(ROTULO_DO_TIPO[tipo])}
                 </SelectItem>
               ))}
             </SelectContent>
