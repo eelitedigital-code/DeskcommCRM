@@ -1,0 +1,137 @@
+[
+  {
+    "nome": "login da empresa A",
+    "ok": true,
+    "detalhe": "http://localhost:3999/app"
+  },
+  {
+    "nome": "A.3 salvar os campos do cliente",
+    "ok": true,
+    "detalhe": ""
+  },
+  {
+    "nome": "A.3 a tela aparece em Configurações",
+    "ok": true,
+    "detalhe": ""
+  },
+  {
+    "nome": "B quanto já gastou = R$ 1.500,00 (só ganhos)",
+    "ok": true,
+    "detalhe": "R$ 1.500,00"
+  },
+  {
+    "nome": "B contagem 1 aberto · 2 ganhos · 1 perdido",
+    "ok": true,
+    "detalhe": "1 aberto · 2 ganhos · 1 perdido"
+  },
+  {
+    "nome": "B lista os 4 negócios",
+    "ok": true,
+    "detalhe": ""
+  },
+  {
+    "nome": "B perdido mostra o motivo",
+    "ok": true,
+    "detalhe": ""
+  },
+  {
+    "nome": "B motivo com nome legível (Preço)",
+    "ok": true,
+    "detalhe": ""
+  },
+  {
+    "nome": "B nada da empresa B aparece",
+    "ok": true,
+    "detalhe": ""
+  },
+  {
+    "nome": "A.7 preencher campo vazio salva sem confirmação",
+    "ok": true,
+    "detalhe": ""
+  },
+  {
+    "nome": "A.5 Visão geral mostra os dados preenchidos",
+    "ok": true,
+    "detalhe": ""
+  },
+  {
+    "nome": "A.5 campo vazio não ocupa linha",
+    "ok": true,
+    "detalhe": ""
+  },
+  {
+    "nome": "A.7 confirmação lista Cidade: Recife → Natal",
+    "ok": true,
+    "detalhe": "Cidade: Recife → Natal"
+  },
+  {
+    "nome": "A.7 confirmar grava o valor novo",
+    "ok": true,
+    "detalhe": ""
+  },
+  {
+    "nome": "A.2 dossiê mostra 'vem do cadastro do cliente'",
+    "ok": true,
+    "detalhe": ""
+  },
+  {
+    "nome": "A.2 dossiê lê o valor do contato",
+    "ok": true,
+    "detalhe": ""
+  },
+  {
+    "nome": "ISOLAMENTO A→B /negocios devolve 404",
+    "ok": true,
+    "detalhe": "HTTP 404"
+  },
+  {
+    "nome": "ISOLAMENTO A→B /negocios sem dado de B",
+    "ok": true,
+    "detalhe": ""
+  },
+  {
+    "nome": "ISOLAMENTO A→B ficha do contato não abre",
+    "ok": true,
+    "detalhe": "HTTP 404"
+  },
+  {
+    "nome": "ISOLAMENTO A /contact-fields traz só os campos de A",
+    "ok": true,
+    "detalhe": "[\"cidade\",\"sexo\",\"observacoes\"]"
+  },
+  {
+    "nome": "ISOLAMENTO total de A não soma B",
+    "ok": true,
+    "detalhe": "[{\"currency\":\"BRL\",\"cents\":150000}]"
+  },
+  {
+    "nome": "ISOLAMENTO cursor forjado é recusado (422)",
+    "ok": true,
+    "detalhe": "HTTP 422"
+  },
+  {
+    "nome": "ISOLAMENTO tela: A abrindo o contato de B não vê nada de B",
+    "ok": true,
+    "detalhe": ""
+  },
+  {
+    "nome": "B vê o próprio total (R$ 99.999,00)",
+    "ok": true,
+    "detalhe": "R$ 99.999,00"
+  },
+  {
+    "nome": "B vê os próprios dados do cliente",
+    "ok": true,
+    "detalhe": ""
+  },
+  {
+    "nome": "B não vê nada de A",
+    "ok": true,
+    "detalhe": ""
+  },
+  {
+    "nome": "ISOLAMENTO B→A /negocios devolve 404",
+    "ok": true,
+    "detalhe": "HTTP 404"
+  }
+]
