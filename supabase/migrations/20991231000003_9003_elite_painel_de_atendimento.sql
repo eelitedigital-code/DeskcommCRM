@@ -180,16 +180,31 @@ as $$
            w_acum as (partition by x.conversation_id order by x.sent_at, x.id
                       rows between unbounded preceding and current row)
   ),
-  esperas as (
-    select o.conversation_id, o.g, min(o.sent_at) as desde
+  -- Os recortes de baixo são calculados NA SEQUÊNCIA da conversa, em uma
+  -- passada, e não juntando a lista de esperas com a de respostas: com
+  -- milhares de conversas o planejador estimava mal o tamanho das duas listas
+  -- e as comparava par a par (medido: 671 milhões de comparações, 50 s numa
+  -- organização com 200 mil mensagens).
+  --   desde_do_grupo: a 1ª mensagem do cliente da espera `g`;
+  --   g_final: quantas respostas a conversa tem até o fim da leitura — espera
+  --   com `g = g_final` não teve resposta depois dela.
+  marcadas as (
+    select o.*,
+           min(o.sent_at) filter (where o.papel = 'cliente')
+             over (partition by o.conversation_id, o.g) as desde_do_grupo,
+           max(o.g) over (partition by o.conversation_id) as g_final
       from ordenadas o
-     where o.papel = 'cliente'
-     group by o.conversation_id, o.g
   ),
+  -- A resposta herda o início da espera da mensagem ANTERIOR (que é do
+  -- cliente, da espera g - 1).
   respostas as (
-    select o.conversation_id, o.g, o.sent_at as respondida_em, o.papel as quem, o.sent_by_user_id
-      from ordenadas o
-     where o.papel in ('ia', 'humano') and o.papel_ant = 'cliente'
+    select x.conversation_id, x.sent_at as respondida_em, x.papel as quem, x.sent_by_user_id, x.desde
+      from (
+        select m.*,
+               lag(m.desde_do_grupo) over (partition by m.conversation_id order by m.sent_at, m.id) as desde
+          from marcadas m
+      ) x
+     where x.papel in ('ia', 'humano') and x.papel_ant = 'cliente'
   ),
   pares as (
     select r.conversation_id,
@@ -199,16 +214,15 @@ as $$
            -- mensagem tem autor; senão o responsável pela conversa (resposta
            -- pelo celular conectado não carrega usuário).
            case when r.quem = 'humano' then coalesce(r.sent_by_user_id, c.assigned_to_user_id) end as atendente,
-           e.desde,
+           r.desde,
            r.respondida_em,
            coalesce(n.regra, 'sem_janela') as regra,
            case
              when n.regra = 'janela'
-               then public.fn_segundos_na_janela(e.desde, r.respondida_em, n.fuso, n.hora_ini, n.hora_fim, n.domingo)
-             else extract(epoch from (r.respondida_em - e.desde))::double precision
+               then public.fn_segundos_na_janela(r.desde, r.respondida_em, n.fuso, n.hora_ini, n.hora_fim, n.domingo)
+             else extract(epoch from (r.respondida_em - r.desde))::double precision
            end as segundos
       from respostas r
-      join esperas e on e.conversation_id = r.conversation_id and e.g = r.g - 1
       join conv c on c.id = r.conversation_id
       left join numeros_regra n on n.id = c.channel_session_id
   ),
@@ -220,12 +234,12 @@ as $$
   ),
   -- Espera aberta no período que ninguém respondeu até o fim dele.
   sem_resposta as (
-    select e.conversation_id
-      from esperas e
-     where e.desde >= p_from and e.desde < p_to
-       and not exists (
-         select 1 from respostas r where r.conversation_id = e.conversation_id and r.g = e.g + 1
-       )
+    select m.conversation_id
+      from marcadas m
+     where m.papel = 'cliente'
+       and m.papel_ant is distinct from 'cliente'
+       and m.g = m.g_final
+       and m.sent_at >= p_from and m.sent_at < p_to
   ),
 
   -- ─── volume ─────────────────────────────────────────────────────────────
