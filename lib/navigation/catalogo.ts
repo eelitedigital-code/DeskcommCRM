@@ -87,7 +87,8 @@ export interface NavMetadata {
  * mesma conversa para a sexta tela.
  */
 export const NAV_GROUPS: NavGroup[] = [
-  { id: "atendimento", label: "Atendimento" },
+  // Hub desde a Spec 04 (fork Elite): o Dashboard foi a quinta tela do grupo.
+  { id: "atendimento", label: "Atendimento", hub: { href: "/app/atendimento", label: "Ver tudo em Atendimento" } },
   { id: "crm", label: "CRM", hub: { href: "/app/crm", label: "Ver tudo em CRM" } },
   { id: "ia", label: "Agente de IA", hub: { href: "/app/ai", label: "Ver tudo em IA" } },
   { id: "canais", label: "Canais" },
@@ -167,11 +168,25 @@ export const NAV_CATALOG = [
   },
   // ---- Atendimento — onde o operador passa o dia ----
   {
+    // Spec 04 (fork Elite): a saúde do atendimento por WhatsApp — volume,
+    // tempo de resposta, fila, picos, origem dos leads e IA x pessoa. Primeira
+    // porta do grupo, acima do Inbox (D1). Todo nível abre; o que cada um vê é
+    // decidido pela rota (D2).
+    href: "/app/dashboard",
+    label: "Dashboard",
+    description: "A saúde do atendimento: mensagens, tempo de resposta, fila e de onde vêm os leads.",
+    icon: "SquaresFour",
+    group: "atendimento",
+    section: "O dia a dia do atendimento",
+    sidebar: true,
+  },
+  {
     href: "/app/inbox",
     label: "Inbox",
     description: "As conversas de WhatsApp, com você e a IA atendendo lado a lado.",
     icon: "Inbox",
     group: "atendimento",
+    section: "O dia a dia do atendimento",
     sidebar: true,
     // Quantas conversas a IA passou para a equipe e esperam uma pessoa (aba Fila).
     contador: "fila",
@@ -182,7 +197,9 @@ export const NAV_CATALOG = [
     description: "Quem esfriou e ainda está aberto — o que corre risco de morrer sem resposta.",
     icon: "ClockCountdown",
     group: "atendimento",
-    sidebar: true,
+    section: "O dia a dia do atendimento",
+    // Fora da barra lateral desde a Spec 04 (opção B do dono): mora no hub
+    // "Ver tudo em Atendimento" e no ⌘K.
   },
   {
     // Entra em "atendimento", e não em "organizacao", porque a Agenda é onde o
@@ -202,6 +219,7 @@ export const NAV_CATALOG = [
     description: "O que está marcado, com quem, e quem atende — seu e da equipe.",
     icon: "CalendarBlank",
     group: "atendimento",
+    section: "O dia a dia do atendimento",
     sidebar: true,
   },
   {
@@ -213,7 +231,9 @@ export const NAV_CATALOG = [
     description: "Scripts salvos para responder mais rápido, seus ou da equipe.",
     icon: "FileText",
     group: "atendimento",
-    sidebar: true,
+    section: "Para responder mais rápido",
+    // Fora da barra lateral desde a Spec 04 (opção B do dono): mora no hub
+    // "Ver tudo em Atendimento" e no ⌘K.
   },
 
   // ---- CRM — o funil ----

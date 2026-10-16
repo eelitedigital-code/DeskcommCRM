@@ -10,6 +10,9 @@
 export {
   // navigation (inbox icon = Tray in Phosphor)
   Tray as Inbox,
+  // Dashboard de Atendimento (Spec 04, fork Elite): quadros, e não mais um ChartX —
+  // o grupo Análise já tem dois gráficos no menu.
+  SquaresFour,
   ListChecks,
   Plugs,
   PlugsConnected,
