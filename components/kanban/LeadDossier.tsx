@@ -20,6 +20,9 @@ import { OwnerBadge } from "./OwnerBadge";
 import { resolveLeadOwner } from "@/lib/kanban/owner";
 import { formatValorDoNegocio, MOEDA_PADRAO } from "@/lib/money";
 import type { CustomFieldDef } from "@/components/contacts/CustomFieldsEditor";
+import { CamposDoClienteEditaveis } from "@/components/contacts/CamposDoClienteEditaveis";
+import { useCamposDoCliente } from "@/hooks/contacts/useCamposDoCliente";
+import { camposDoNegocio } from "@/lib/contacts/campos-do-cliente";
 
 interface Props {
   open: boolean;
@@ -63,6 +66,10 @@ export function LeadDossier({
   const t = useT();
   const campos = useRef<HTMLDivElement | null>(null);
   const timeline = useLeadTimeline(open ? lead.id : null, lead.contact_id);
+  // Campo do cliente é do CONTATO (D2): aparece aqui marcado e grava no
+  // contato; a mesma chave no funil sai da lista do negócio.
+  const camposDoCliente = useCamposDoCliente(open).data ?? [];
+  const camposDoNegocioDoFunil = camposDoNegocio(fieldDefs, camposDoCliente);
   const owner = resolveLeadOwner(lead, ownerNames);
   const score = lead.score ?? null;
   // N1 — o atalho "Nova proposta" é manager+ (mesmo gate do envio, mesma
@@ -185,10 +192,21 @@ export function LeadDossier({
 
         {/* ③ campos, por último */}
         <div ref={campos} className="border-t border-border pt-3">
+          {lead.contact_id && camposDoCliente.length > 0 && (
+            <section className="mb-4 space-y-2" data-testid="dossie-dados-do-cliente">
+              <h3 className="text-xs font-medium uppercase tracking-wide text-text-muted">
+                {t("Dados do cliente")}
+              </h3>
+              <p className="text-xs text-muted-foreground">
+                {t("Vem do cadastro do cliente: vale para todos os negócios dele.")}
+              </p>
+              <CamposDoClienteEditaveis contactId={lead.contact_id} campos={camposDoCliente} />
+            </section>
+          )}
           <h3 className="mb-2 text-xs font-medium uppercase tracking-wide text-text-muted">
             {t("Dados do negócio")}
           </h3>
-          <LeadFieldsForm lead={lead} pipelineId={pipelineId} fieldDefs={fieldDefs} />
+          <LeadFieldsForm lead={lead} pipelineId={pipelineId} fieldDefs={camposDoNegocioDoFunil} />
         </div>
 
         {/* N1 — seção "Propostas", depois de "Dados do negócio". Some sozinha

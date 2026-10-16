@@ -31,6 +31,9 @@ import { TarefasDaDemanda } from "./TarefasDaDemanda";
 import { useDefaultPipeline } from "@/hooks/pipelines/useDefaultPipeline";
 import { NewLeadDialog } from "@/components/kanban/NewLeadDialog";
 import { CustomFieldsEditor, type CustomFieldDef } from "@/components/contacts/CustomFieldsEditor";
+import { CamposDoClienteEditaveis } from "@/components/contacts/CamposDoClienteEditaveis";
+import { useCamposDoCliente } from "@/hooks/contacts/useCamposDoCliente";
+import { camposDoNegocio } from "@/lib/contacts/campos-do-cliente";
 import { useEditLead } from "@/hooks/kanban/useUpdateLead";
 import { useBulkAction } from "@/hooks/kanban/useBulkAction";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -353,11 +356,14 @@ function InboxLeadEditor({
   selecionadoId,
   onSelecionar,
   onSalvo,
+  camposDoClienteDaOrg,
 }: {
   leads: LeadRow[];
   selecionadoId: string | null;
   onSelecionar: (id: string) => void;
   onSalvo: () => void;
+  /** Os campos do cliente: a mesma chave no funil passa a ser do contato e sai daqui. */
+  camposDoClienteDaOrg: CustomFieldDef[];
 }) {
   const t = useT();
   const ativo = leads.find((l) => l.id === selecionadoId) ?? leads[0]!;
@@ -407,7 +413,7 @@ function InboxLeadEditor({
         key={ativo.id}
         leadId={ativo.id}
         pipelineId={ativo.pipeline_id}
-        fieldDefs={ativo.field_defs ?? []}
+        fieldDefs={camposDoNegocio(ativo.field_defs ?? [], camposDoClienteDaOrg)}
         valores={ativo.custom_fields ?? {}}
         onSalvo={onSalvo}
       />
@@ -533,6 +539,9 @@ export function CRMSidePanel({ conversation }: Props) {
   const t = useT();
   const contact = conversation?.contacts ?? null;
   const contactId = contact?.id ?? null;
+  // Os campos do cliente da organização: o bloco "Dados do cliente" e o filtro
+  // de colisão do bloco de campos do negócio.
+  const camposDoClienteDaOrg = useCamposDoCliente(Boolean(contactId)).data ?? [];
   const [desfechoDraft, setDesfechoDraft] = useState<DesfechoDraft | null>(null);
   // A saída do filtro produz null enquanto o detalhe carrega. O rascunho não
   // some nessa lacuna; outra conversa/contato real o descarta, sem expô-lo.
@@ -866,6 +875,24 @@ export function CRMSidePanel({ conversation }: Props) {
           ou sem roteiro, não desenha nada). */}
       {contactId && !contact?.is_anonymized && <RoteirosDoContato contactId={contactId} variante="painel" />}
 
+      {/* Dados do cliente: gravam no CONTATO e funcionam sem negócio aberto. */}
+      {contactId && !contact?.is_anonymized && (
+        <>
+          <section data-testid="inbox-dados-do-cliente">
+            <h3 className="mb-2 text-xs font-semibold text-text">{t("Dados do cliente")}</h3>
+            <CamposDoClienteEditaveis
+              key={contactId}
+              contactId={contactId}
+              campos={camposDoClienteDaOrg}
+              compacto
+              disabled={readonly}
+              podeConfigurar={roleAtLeast(activeOrg?.role, "manager")}
+            />
+          </section>
+          <Separator />
+        </>
+      )}
+
       <section data-testid="inbox-campos-lead">
         <h3 className="text-xs font-semibold text-text">
           {t("Leads recentes")}
@@ -878,6 +905,7 @@ export function CRMSidePanel({ conversation }: Props) {
             selecionadoId={leadAtivoId}
             onSelecionar={setLeadAtivoId}
             onSalvo={recarregar}
+            camposDoClienteDaOrg={camposDoClienteDaOrg}
           /></fieldset>
         ) : (
           <SemLista vazio="Sem leads." erro={erro} onTentarDeNovo={() => setTentativa((n) => n + 1)} />

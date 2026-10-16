@@ -946,6 +946,23 @@ export const NAV_CATALOG = [
     minRole: "manager",
   },
   {
+    // Os dados que a empresa guarda de CADA CLIENTE (sexo, cidade, produtos de
+    // interesse…), independentes de funil: as definições moram em
+    // `organizations.settings.contact_fields` e o valor em
+    // `contacts.custom_fields`. Antes a ficha pegava emprestados os campos do
+    // funil padrão, e o cadastro do cliente mudava junto com o funil padrão.
+    //
+    // `manager`, como "Etapas do funil" e "Tags": é montagem da operação, e a
+    // action que grava (`salvarCamposDoCliente`) cobra o mesmo papel.
+    href: "/app/settings/campos-do-cliente",
+    label: "Campos do cliente",
+    description: "Os dados que você guarda de cada cliente, na ficha e no painel da conversa.",
+    icon: "IdentificationCard",
+    group: "organizacao",
+    section: "Sua empresa",
+    minRole: "manager",
+  },
+  {
     // A área única dos recursos opcionais (pedido do mantenedor, doc 73/80):
     // tudo o que a empresa pode ligar, com o estado e o caminho até a tela onde
     // se liga. Só leitura — quem liga continua sendo a tela do assunto.

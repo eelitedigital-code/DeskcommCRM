@@ -13,6 +13,16 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -22,6 +32,20 @@ import { useUpdateContact } from "@/hooks/contacts/useUpdateContact";
 import { CustomFieldsEditor, type CustomFieldDef } from "@/components/contacts/CustomFieldsEditor";
 import type { Contact } from "@/lib/types/contacts";
 import { phoneForDisplay } from "@/lib/channels/phone-variants";
+import { valorPreenchido } from "@/lib/contacts/campos-do-cliente";
+import { valorDoCampoEmTexto } from "@/components/contacts/DadosDoCliente";
+
+/** Uma linha do "valor antigo → valor novo" da confirmação. */
+interface Sobrescrita {
+  rotulo: string;
+  de: string;
+  para: string;
+}
+
+function mesmoValor(a: unknown, b: unknown): boolean {
+  if (!valorPreenchido(a) && !valorPreenchido(b)) return true;
+  return JSON.stringify(a) === JSON.stringify(b);
+}
 
 interface FormShape {
   name?: string;
@@ -37,7 +61,10 @@ interface Props {
   contact: Contact;
   open: boolean;
   onOpenChange: (v: boolean) => void;
-  /** Definições vindas de `crm_pipelines.settings.fields[]`. Vazio = a seção some. */
+  /**
+   * Os campos do cliente da organização (`organizations.settings.contact_fields`).
+   * Vazio = a seção some.
+   */
   customFieldDefs?: CustomFieldDef[];
 }
 
@@ -46,6 +73,12 @@ export function EditContactDialog({ contact, open, onOpenChange, customFieldDefs
   const perfil = perfilDoPais(useActiveOrg()?.country);
   const update = useUpdateContact(contact.id);
   const [serverError, setServerError] = useState<string | null>(null);
+  // O salvamento que espera a confirmação: o payload já validado e a lista do
+  // que ele sobrescreve. Um diálogo por salvamento, nunca um por campo.
+  const [aConfirmar, setAConfirmar] = useState<{
+    dados: ContactPatch;
+    sobrescritas: Sobrescrita[];
+  } | null>(null);
 
   const form = useForm<FormShape>({
     defaultValues: {
@@ -100,9 +133,68 @@ export function EditContactDialog({ contact, open, onOpenChange, customFieldDefs
       setServerError(parsed.error.issues[0]?.message ?? t("Dados inválidos"));
       return;
     }
+    const sobrescritas = oQueSobrescreve(values, tags);
+    if (sobrescritas.length > 0) {
+      setAConfirmar({ dados: parsed.data as ContactPatch, sobrescritas });
+      return;
+    }
+    await gravar(parsed.data as ContactPatch);
+  }
+
+  /**
+   * CONFIRMAR SÓ QUANDO SOBRESCREVE (D5). Preencher o que estava vazio salva
+   * direto: a edição já é auditada com de→para, e pedir confirmação em tudo
+   * ensina a equipe a parar de corrigir cadastro. Mudar ou limpar o que JÁ
+   * tinha valor lista item a item o que vai mudar.
+   *
+   * Nome, e-mail, telefone e nascimento só entram quando o novo valor foi
+   * digitado: deixar o campo em branco não apaga nada (o payload os omite).
+   */
+  function oQueSobrescreve(values: FormShape, tags: string[]): Sobrescrita[] {
+    const lista: Sobrescrita[] = [];
+    const vazio = t("(vazio)");
+    const basico: Array<[string, string, string | undefined]> = [
+      [t("Nome"), contact.name ?? "", values.name],
+      ["Email", contact.email ?? "", values.email],
+      [
+        t("Telefone"),
+        contact.phone_number ? phoneForDisplay(contact.phone_number) : "",
+        values.phone_number,
+      ],
+      [
+        t("Data de nascimento"),
+        contact.birthdate ? contact.birthdate.split("-").reverse().join("/") : "",
+        values.birthdate?.trim() ? values.birthdate.trim().split("-").reverse().join("/") : "",
+      ],
+    ];
+    for (const [rotulo, antes, depois] of basico) {
+      const novo = (depois ?? "").trim();
+      if (antes && novo && novo !== antes) lista.push({ rotulo, de: antes, para: novo });
+    }
+    if (contact.tags.length > 0 && contact.tags.join(", ") !== tags.join(", ")) {
+      lista.push({ rotulo: "Tags", de: contact.tags.join(", "), para: tags.join(", ") || vazio });
+    }
+    const antes = contact.custom_fields ?? {};
+    const depois = values.custom_fields ?? {};
+    const rotulos = { sim: t("Sim"), nao: t("Não") };
+    for (const campo of customFieldDefs) {
+      const de = antes[campo.key];
+      const para = depois[campo.key];
+      if (!valorPreenchido(de) || mesmoValor(de, para)) continue;
+      lista.push({
+        rotulo: campo.label,
+        de: valorDoCampoEmTexto(campo, de, rotulos),
+        para: valorDoCampoEmTexto(campo, para, rotulos) || vazio,
+      });
+    }
+    return lista;
+  }
+
+  async function gravar(dados: ContactPatch) {
     try {
-      await update.mutateAsync(parsed.data as ContactPatch);
+      await update.mutateAsync(dados);
       toast.success(t("Contato atualizado"));
+      setAConfirmar(null);
       onOpenChange(false);
     } catch {
       // hook handles toast
@@ -140,9 +232,9 @@ export function EditContactDialog({ contact, open, onOpenChange, customFieldDefs
           {customFieldDefs.length > 0 && (
             <div className="space-y-3 rounded-md border border-border p-3">
               <div>
-                <h3 className="text-sm font-medium">{t("Campos personalizados")}</h3>
+                <h3 className="text-sm font-medium">{t("Dados do cliente")}</h3>
                 <p className="text-xs text-muted-foreground">
-                  {t("Campos definidos no funil padrão da organização.")}
+                  {t("Definidos em Configurações › Campos do cliente.")}
                 </p>
               </div>
               <CustomFieldsEditor
@@ -169,6 +261,43 @@ export function EditContactDialog({ contact, open, onOpenChange, customFieldDefs
           </DialogFooter>
         </form>
       </DialogContent>
+      <AlertDialog
+        open={aConfirmar !== null}
+        onOpenChange={(aberto) => {
+          if (!aberto) setAConfirmar(null);
+        }}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>{t("Substituir dados já preenchidos?")}</AlertDialogTitle>
+            <AlertDialogDescription>
+              {t("Estes campos já tinham valor e vão mudar:")}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <ul className="space-y-1 text-sm" data-testid="confirmar-sobrescrita">
+            {aConfirmar?.sobrescritas.map((item) => (
+              <li key={item.rotulo}>
+                <span className="font-medium">{item.rotulo}:</span>{" "}
+                <span className="text-muted-foreground line-through">{item.de}</span> →{" "}
+                <span>{item.para}</span>
+              </li>
+            ))}
+          </ul>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={update.isPending}>{t("Cancelar")}</AlertDialogCancel>
+            <AlertDialogAction
+              disabled={update.isPending}
+              onClick={(e) => {
+                // O diálogo só fecha quando a gravação termina.
+                e.preventDefault();
+                if (aConfirmar) void gravar(aConfirmar.dados);
+              }}
+            >
+              {update.isPending ? t("Salvando…") : t("Confirmar")}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </Dialog>
   );
 }

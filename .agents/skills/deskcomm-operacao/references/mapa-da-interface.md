@@ -134,6 +134,7 @@ Hub: "Configurações" → `/app/settings`
 | Distribuição de atendimento | Organização → Hub "Configurações" → Distribuição de atendimento `/app/settings/atendimento` | Quem recebe cada cliente novo, e o que cada atendente enxerga. | gerente ou acima |  |
 | Automações | Organização → Hub "Configurações" → Automações `/app/settings/automacoes` | O freio único do passo em que a IA escolhe entre as opções de uma regra, para a empresa inteira. | gerente ou acima |  |
 | Tags | Organização → Hub "Configurações" → Tags `/app/settings/tags` | O vocabulário de etiquetas da empresa: onde cada uma é usada e como renomear, juntar ou excluir. | gerente ou acima |  |
+| Campos do cliente | Organização → Hub "Configurações" → Campos do cliente `/app/settings/campos-do-cliente` | Os dados que você guarda de cada cliente, na ficha e no painel da conversa. | gerente ou acima |  |
 | Recursos opcionais | Organização → Hub "Configurações" → Recursos opcionais `/app/settings/recursos` | Tudo o que se liga e desliga, se está ligado e onde se ajusta. | gerente ou acima |  |
 | Organização | Organização → Hub "Configurações" → Organização `/app/settings/tenant` | Dados da empresa, retenção de dados e encarregado de LGPD. | administrador |  |
 | Conversões | Organização → Hub "Configurações" → Conversões `/app/settings/conversoes` | Devolver ao anúncio as vendas que ele trouxe, e marcar a origem de quem chega pelo site. | administrador |  |

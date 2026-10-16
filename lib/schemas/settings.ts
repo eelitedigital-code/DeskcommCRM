@@ -212,6 +212,19 @@ export const customFieldSchema = z.object({
    * opt-in, igual a `obrigatorio_em`.
    */
   mostrar_quando: mostrarQuandoSchema.optional(),
+  /**
+   * DE QUEM é o valor deste campo — e, portanto, onde ele é lido e gravado.
+   *
+   * - `negocio` (o padrão, e o de todo campo de funil gravado antes desta
+   *   chave existir): o valor mora em `crm_leads.custom_fields`;
+   * - `contato`: o valor mora em `contacts.custom_fields`, venha a edição da
+   *   ficha, do painel da conversa ou do dossiê do negócio. Um lugar só de
+   *   gravação é o que faz o cadastro do cliente prevalecer sobre o funil.
+   *
+   * As definições `contato` moram em `organizations.settings.contact_fields`
+   * (`lib/contacts/campos-do-cliente.ts`), não no funil.
+   */
+  escopo: z.enum(["contato", "negocio"]).optional(),
 });
 export type CustomFieldDef = z.infer<typeof customFieldSchema>;
 

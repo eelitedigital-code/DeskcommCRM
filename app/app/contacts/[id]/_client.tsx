@@ -36,11 +36,12 @@ import {
 } from "@/hooks/contacts/useAlwaysHumanContact";
 import { useHierarquiaDoAnuncio } from "@/hooks/contacts/useHierarquiaDoAnuncio";
 import { useAuth } from "@/hooks/auth/AuthProvider";
-import { useDefaultPipeline } from "@/hooks/pipelines/useDefaultPipeline";
-import { camposDoFunil } from "@/lib/leads/campos-do-funil";
+import { useCamposDoCliente } from "@/hooks/contacts/useCamposDoCliente";
 import { ROLE_RANK } from "@/lib/auth/types";
 import { TimelineView } from "@/components/contacts/TimelineView";
 import { EditContactDialog } from "@/components/contacts/EditContactDialog";
+import { DadosDoCliente } from "@/components/contacts/DadosDoCliente";
+import { NegociosDoContato } from "@/components/contacts/NegociosDoContato";
 import { AnonymizeDialog } from "@/components/contacts/AnonymizeDialog";
 import { PropostasDeDado } from "@/components/contacts/PropostasDeDado";
 import { RoteirosDoContato } from "@/components/contacts/RoteirosDoContato";
@@ -80,9 +81,11 @@ export function ContactDetailClient({ contactId, paineisDeModulo = [] }: Props) 
   const q = useContact(contactId);
   const { user, activeOrg } = useAuth();
   const clientesLigado = activeOrg?.cliente_pela_agenda === true;
-  // As DEFINIÇÕES continuam no funil (`crm_pipelines.settings.fields[]`) — só o
-  // VALOR mora no contato. `camposDoFunil` é o mesmo leitor que o Kanban usa.
-  const pipelineQuery = useDefaultPipeline(Boolean(activeOrg));
+  // As DEFINIÇÕES dos campos do cliente são da ORGANIZAÇÃO
+  // (`organizations.settings.contact_fields`), e o VALOR mora no contato. Antes
+  // vinham do funil padrão, e o cadastro do cliente mudava com ele.
+  const camposQuery = useCamposDoCliente(Boolean(activeOrg));
+  const camposDoCliente = camposQuery.data ?? [];
   const [editOpen, setEditOpen] = useState(false);
   const [anonOpen, setAnonOpen] = useState(false);
   // Desfazer o descadastro é o override da regra W-02 — só admin, e auditado.
@@ -372,113 +375,119 @@ export function ContactDetailClient({ contactId, paineisDeModulo = [] }: Props) 
         </TabsList>
 
         <TabsContent value="overview" className="mt-4">
-          <Card className="p-4">
-            <dl className="grid grid-cols-1 gap-4 text-sm md:grid-cols-2">
-              <div>
-                <dt className="text-xs uppercase text-muted-foreground">{t("Nome")}</dt>
-                <dd className="mt-1">{contact.name ?? "—"}</dd>
-              </div>
-              <div>
-                <dt className="text-xs uppercase text-muted-foreground">{t("Nome")} · WhatsApp</dt>
-                <dd className="mt-1">{contact.display_name ?? "—"}</dd>
-              </div>
-              <div>
-                <dt className="text-xs uppercase text-muted-foreground">Email</dt>
-                <dd className="mt-1">{contact.email ?? "—"}</dd>
-              </div>
-              <div>
-                <dt className="text-xs uppercase text-muted-foreground">{t("Telefone")}</dt>
-                <dd className="mt-1">
-                  {contact.phone_number ? phoneForDisplay(contact.phone_number) : "—"}
-                </dd>
-              </div>
-              {/*
-                A data gravada pelo "Editar contato" (e pela proposta aprovada),
-                enxergada aqui — é ela que o cron `contact-birthdays` lê para
-                emitir `contact.birthday`. A string vira `dd/MM/yyyy` PELOS
-                PEDAÇOS: `new Date("1990-09-14")` nasce à meia-noite em UTC, e
-                `format` no fuso da tela (UTC-3) devolveria 13/09 — o
-                aniversário de ontem para quem olha.
-              */}
-              <div>
-                <dt className="text-xs uppercase text-muted-foreground">
-                  {t("Data de nascimento")}
-                </dt>
-                <dd className="mt-1">
-                  {contact.birthdate ? contact.birthdate.split("-").reverse().join("/") : "—"}
-                </dd>
-              </div>
-              {/*
-                A origem sai do `source_metadata` quando ele tem algo melhor a
-                dizer, e cai na coluna `source` quando não tem. Antes esta linha
-                lia só a coluna, e a resposta era `site` para quem chegou pelo
-                link do site, ou o nome da plataforma para quem clicou num
-                anúncio — mesmo com o `utm_source` da campanha gravado ao lado.
-              */}
-              <div>
-                <dt className="text-xs uppercase text-muted-foreground">{t("Origem")}</dt>
-                <dd className="mt-1">{origem.origem}</dd>
-              </div>
-              <NivelDaOrigem rotulo={t("Campanha")} valor={origem.campanha} />
-              <NivelDaOrigem rotulo={t("Conjunto")} valor={origem.conjunto} />
-              <NivelDaOrigem rotulo={t("Anúncio")} valor={origem.anuncio} />
-              <NivelDaOrigem rotulo={t("Posicionamento")} valor={origem.posicionamento} />
-              {origem.semPosicionamentoDeAnuncio && (
+          {/* Cadastro à esquerda, Negócios à direita (só leitura). Em tela
+              estreita, um embaixo do outro. */}
+          <div className="grid grid-cols-1 gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(0,24rem)]">
+            <Card className="space-y-6 p-4">
+              <dl className="grid grid-cols-1 gap-4 text-sm md:grid-cols-2">
                 <div>
-                  <dt className="text-xs uppercase text-muted-foreground">
-                    {t("Posicionamento")}
-                  </dt>
-                  <dd className="mt-1 text-sm text-muted-foreground">
-                    {t("A plataforma não informa o posicionamento de cada clique em anúncio.")}
+                  <dt className="text-xs uppercase text-muted-foreground">{t("Nome")}</dt>
+                  <dd className="mt-1">{contact.name ?? "—"}</dd>
+                </div>
+                <div>
+                  <dt className="text-xs uppercase text-muted-foreground">{t("Nome")} · WhatsApp</dt>
+                  <dd className="mt-1">{contact.display_name ?? "—"}</dd>
+                </div>
+                <div>
+                  <dt className="text-xs uppercase text-muted-foreground">Email</dt>
+                  <dd className="mt-1">{contact.email ?? "—"}</dd>
+                </div>
+                <div>
+                  <dt className="text-xs uppercase text-muted-foreground">{t("Telefone")}</dt>
+                  <dd className="mt-1">
+                    {contact.phone_number ? phoneForDisplay(contact.phone_number) : "—"}
                   </dd>
                 </div>
-              )}
-              <div>
-                <dt className="text-xs uppercase text-muted-foreground">{t("Última atividade")}</dt>
-                <dd className="mt-1">
-                  {contact.last_activity_at
-                    ? format(new Date(contact.last_activity_at), "dd/MM/yyyy HH:mm", {
-                        locale: localeDaData,
-                      })
-                    : "—"}
-                </dd>
-              </div>
-              <div>
-                <dt className="text-xs uppercase text-muted-foreground">{t("Criado em")}</dt>
-                <dd className="mt-1">
-                  {format(new Date(contact.created_at), "dd/MM/yyyy", { locale: localeDaData })}
-                </dd>
-              </div>
-              {/*
-                Escondido quando nulo, em vez de mostrar "—": aqui a ausência não
-                é dado faltando, é "ainda não é cliente". Um travessão nesta
-                linha leria como falha de cadastro. E escondido com a regra
-                "Clientes pela agenda" desligada: a data está congelada.
-              */}
-              {clientesLigado && contact.first_service_at && (
+                {/*
+                  A data gravada pelo "Editar contato" (e pela proposta aprovada),
+                  enxergada aqui — é ela que o cron `contact-birthdays` lê para
+                  emitir `contact.birthday`. A string vira `dd/MM/yyyy` PELOS
+                  PEDAÇOS: `new Date("1990-09-14")` nasce à meia-noite em UTC, e
+                  `format` no fuso da tela (UTC-3) devolveria 13/09 — o
+                  aniversário de ontem para quem olha.
+                */}
                 <div>
                   <dt className="text-xs uppercase text-muted-foreground">
-                    {t("Cliente desde")}
+                    {t("Data de nascimento")}
                   </dt>
                   <dd className="mt-1">
-                    {format(new Date(contact.first_service_at), "dd/MM/yyyy", {
-                      locale: localeDaData,
-                    })}
+                    {contact.birthdate ? contact.birthdate.split("-").reverse().join("/") : "—"}
                   </dd>
                 </div>
-              )}
-              <div>
-                <dt className="text-xs uppercase text-muted-foreground">Tags</dt>
-                <dd className="mt-1 flex flex-wrap gap-1">
-                  {contact.tags.length === 0
-                    ? "—"
-                    : contact.tags.map((t) => (
-                        <ChipDeEtiqueta key={t} tag={t} />
-                      ))}
-                </dd>
-              </div>
-            </dl>
-          </Card>
+                {/*
+                  A origem sai do `source_metadata` quando ele tem algo melhor a
+                  dizer, e cai na coluna `source` quando não tem. Antes esta linha
+                  lia só a coluna, e a resposta era `site` para quem chegou pelo
+                  link do site, ou o nome da plataforma para quem clicou num
+                  anúncio — mesmo com o `utm_source` da campanha gravado ao lado.
+                */}
+                <div>
+                  <dt className="text-xs uppercase text-muted-foreground">{t("Origem")}</dt>
+                  <dd className="mt-1">{origem.origem}</dd>
+                </div>
+                <NivelDaOrigem rotulo={t("Campanha")} valor={origem.campanha} />
+                <NivelDaOrigem rotulo={t("Conjunto")} valor={origem.conjunto} />
+                <NivelDaOrigem rotulo={t("Anúncio")} valor={origem.anuncio} />
+                <NivelDaOrigem rotulo={t("Posicionamento")} valor={origem.posicionamento} />
+                {origem.semPosicionamentoDeAnuncio && (
+                  <div>
+                    <dt className="text-xs uppercase text-muted-foreground">
+                      {t("Posicionamento")}
+                    </dt>
+                    <dd className="mt-1 text-sm text-muted-foreground">
+                      {t("A plataforma não informa o posicionamento de cada clique em anúncio.")}
+                    </dd>
+                  </div>
+                )}
+                <div>
+                  <dt className="text-xs uppercase text-muted-foreground">{t("Última atividade")}</dt>
+                  <dd className="mt-1">
+                    {contact.last_activity_at
+                      ? format(new Date(contact.last_activity_at), "dd/MM/yyyy HH:mm", {
+                          locale: localeDaData,
+                        })
+                      : "—"}
+                  </dd>
+                </div>
+                <div>
+                  <dt className="text-xs uppercase text-muted-foreground">{t("Criado em")}</dt>
+                  <dd className="mt-1">
+                    {format(new Date(contact.created_at), "dd/MM/yyyy", { locale: localeDaData })}
+                  </dd>
+                </div>
+                {/*
+                  Escondido quando nulo, em vez de mostrar "—": aqui a ausência não
+                  é dado faltando, é "ainda não é cliente". Um travessão nesta
+                  linha leria como falha de cadastro. E escondido com a regra
+                  "Clientes pela agenda" desligada: a data está congelada.
+                */}
+                {clientesLigado && contact.first_service_at && (
+                  <div>
+                    <dt className="text-xs uppercase text-muted-foreground">
+                      {t("Cliente desde")}
+                    </dt>
+                    <dd className="mt-1">
+                      {format(new Date(contact.first_service_at), "dd/MM/yyyy", {
+                        locale: localeDaData,
+                      })}
+                    </dd>
+                  </div>
+                )}
+                <div>
+                  <dt className="text-xs uppercase text-muted-foreground">Tags</dt>
+                  <dd className="mt-1 flex flex-wrap gap-1">
+                    {contact.tags.length === 0
+                      ? "—"
+                      : contact.tags.map((t) => (
+                          <ChipDeEtiqueta key={t} tag={t} />
+                        ))}
+                  </dd>
+                </div>
+              </dl>
+              <DadosDoCliente campos={camposDoCliente} valores={contact.custom_fields ?? {}} />
+            </Card>
+            <NegociosDoContato contactId={contactId} />
+          </div>
           <div className="mt-4">
             <RoteirosDoContato contactId={contactId} />
           </div>
@@ -534,7 +543,7 @@ export function ContactDetailClient({ contactId, paineisDeModulo = [] }: Props) 
         contact={contact}
         open={editOpen}
         onOpenChange={setEditOpen}
-        customFieldDefs={camposDoFunil(pipelineQuery.data?.pipeline.settings ?? null)}
+        customFieldDefs={camposDoCliente}
       />
       <AnonymizeDialog contactId={contactId} open={anonOpen} onOpenChange={setAnonOpen} />
     </div>
