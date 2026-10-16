@@ -24,6 +24,7 @@ import { useLocaleDeData } from "@/hooks/i18n/useLocaleDeData";
 import { useT } from "@/hooks/i18n/useT";
 import { apiClient } from "@/lib/api/client";
 import { MOEDA_PADRAO, formatSomaPorMoeda, formatValorDoNegocio } from "@/lib/money";
+import { rotuloDoMotivoDePerda } from "@/lib/schemas/leads";
 
 interface Negocio {
   id: string;
@@ -181,7 +182,7 @@ export function NegociosDoContato({ contactId }: { contactId: string }) {
               </p>
               {n.status === "lost" && n.lost_reason && (
                 <p className="text-xs text-error-fg">
-                  {t("Motivo:")} {n.lost_reason}
+                  {t("Motivo:")} {t(rotuloDoMotivoDePerda(n.lost_reason))}
                 </p>
               )}
             </li>
