@@ -1,0 +1,152 @@
+[
+  {
+    "nome": "login da organização A",
+    "ok": true,
+    "detalhe": ""
+  },
+  {
+    "nome": "DESLIGADO: a rota de empresas responde 403",
+    "ok": true,
+    "detalhe": "HTTP 403"
+  },
+  {
+    "nome": "DESLIGADO: a tela Empresas recusa (403)",
+    "ok": true,
+    "detalhe": "http://localhost:3999/403"
+  },
+  {
+    "nome": "DESLIGADO: a porta Empresas some do hub do CRM",
+    "ok": true,
+    "detalhe": ""
+  },
+  {
+    "nome": "A.3 ligar Empresas pela tela",
+    "ok": true,
+    "detalhe": ""
+  },
+  {
+    "nome": "LIGADO: a porta Empresas aparece no hub do CRM",
+    "ok": true,
+    "detalhe": ""
+  },
+  {
+    "nome": "B botão Criar fica desligado sem nome",
+    "ok": true,
+    "detalhe": ""
+  },
+  {
+    "nome": "B empresa criada só com o nome (sem CNPJ)",
+    "ok": true,
+    "detalhe": "364a3dfe-2198-4ee4-a44b-39086c1ae8b8"
+  },
+  {
+    "nome": "B servidor recusa empresa sem nome (422)",
+    "ok": true,
+    "detalhe": "HTTP 422"
+  },
+  {
+    "nome": "C dois contatos na equipe, com cargo",
+    "ok": true,
+    "detalhe": ""
+  },
+  {
+    "nome": "C a palavra 'pessoa' não aparece como entidade (D7)",
+    "ok": true,
+    "detalhe": ""
+  },
+  {
+    "nome": "C duplicata recusada com mensagem legível (409)",
+    "ok": true,
+    "detalhe": "HTTP 409 {\"error\":{\"code\":\"ja_na_equipe\",\"message\":\"Este contato já está na equipe da empresa.\"}}"
+  },
+  {
+    "nome": "D total comprado = R$ 25.000,00",
+    "ok": true,
+    "detalhe": "R$ 25.000,00"
+  },
+  {
+    "nome": "D 2 ganhos",
+    "ok": true,
+    "detalhe": "0 abertos · 2 ganhos · 0 perdidos"
+  },
+  {
+    "nome": "D lista com nome · cargo · final do número",
+    "ok": true,
+    "detalhe": ""
+  },
+  {
+    "nome": "D3 quem saiu: sem nome, com cargo e final do número",
+    "ok": true,
+    "detalhe": ""
+  },
+  {
+    "nome": "D3 a venda de quem saiu continua no total",
+    "ok": true,
+    "detalhe": ""
+  },
+  {
+    "nome": "D3 equipe: 1 · 1 saiu",
+    "ok": true,
+    "detalhe": "1 · 1 saiu"
+  },
+  {
+    "nome": "D3 o nome de quem saiu também some da equipe",
+    "ok": true,
+    "detalhe": ""
+  },
+  {
+    "nome": "B.1 link da Shopee gravado na empresa",
+    "ok": true,
+    "detalhe": ""
+  },
+  {
+    "nome": "C a ficha do contato mostra empresa e cargo",
+    "ok": true,
+    "detalhe": ""
+  },
+  {
+    "nome": "D4 o link da empresa NÃO foi copiado para o contato",
+    "ok": true,
+    "detalhe": ""
+  },
+  {
+    "nome": "ISOLAMENTO A→B /api/v1/companies/<B> → 404 sem dado",
+    "ok": true,
+    "detalhe": "HTTP 404"
+  },
+  {
+    "nome": "ISOLAMENTO A→B /api/v1/companies/<B>/equipe → 404 sem dado",
+    "ok": true,
+    "detalhe": "HTTP 404"
+  },
+  {
+    "nome": "ISOLAMENTO A→B /api/v1/companies/<B>/vendas → 404 sem dado",
+    "ok": true,
+    "detalhe": "HTTP 404"
+  },
+  {
+    "nome": "ISOLAMENTO B→A /api/v1/companies/<A> → 404 sem dado",
+    "ok": true,
+    "detalhe": "HTTP 404"
+  },
+  {
+    "nome": "ISOLAMENTO B→A /api/v1/companies/<A>/equipe → 404 sem dado",
+    "ok": true,
+    "detalhe": "HTTP 404"
+  },
+  {
+    "nome": "ISOLAMENTO B→A /api/v1/companies/<A>/vendas → 404 sem dado",
+    "ok": true,
+    "detalhe": "HTTP 404"
+  },
+  {
+    "nome": "ISOLAMENTO B lista só a própria empresa",
+    "ok": true,
+    "detalhe": ""
+  },
+  {
+    "nome": "ISOLAMENTO B vê só o próprio total (R$ 99.999,00)",
+    "ok": true,
+    "detalhe": ""
+  }
+]
