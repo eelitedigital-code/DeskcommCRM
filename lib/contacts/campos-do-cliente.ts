@@ -14,6 +14,13 @@ import { customFieldSchema, type CustomFieldDef } from "@/lib/schemas/settings";
  */
 export const CHAVE_DOS_CAMPOS_DO_CLIENTE = "contact_fields";
 
+/**
+ * Campos próprios da EMPRESA (cadastro B2B): definições em
+ * `organizations.settings.company_fields`, valores em `companies.custom_fields`
+ * (migration 9001). Mesmo schema, mesmo editor, lugar próprio.
+ */
+export const CHAVE_DOS_CAMPOS_DA_EMPRESA = "company_fields";
+
 /** O teto da lista — o mesmo dos campos de funil (o editor para em 50). */
 export const MAXIMO_DE_CAMPOS_DO_CLIENTE = 50;
 
@@ -32,6 +39,21 @@ export function camposDoCliente(
   for (const item of raw) {
     const parsed = customFieldSchema.safeParse(item);
     if (parsed.success) out.push({ ...parsed.data, escopo: "contato" });
+  }
+  return out;
+}
+
+/** Lê `organizations.settings.company_fields` com a mesma tolerância de `camposDoCliente`. */
+export function camposDaEmpresa(
+  settings: Record<string, unknown> | null | undefined,
+): CustomFieldDef[] {
+  if (!settings) return [];
+  const raw = settings[CHAVE_DOS_CAMPOS_DA_EMPRESA];
+  if (!Array.isArray(raw)) return [];
+  const out: CustomFieldDef[] = [];
+  for (const item of raw) {
+    const parsed = customFieldSchema.safeParse(item);
+    if (parsed.success) out.push(parsed.data);
   }
   return out;
 }

@@ -1,5 +1,7 @@
 import { z } from "zod";
 
+import { customFieldsSchema } from "@/lib/schemas/contacts";
+
 export const enrichmentStatusSchema = z.enum(["pending", "processing", "completed", "failed"]);
 
 export const companyCreateSchema = z.object({
@@ -20,6 +22,13 @@ export const companyCreateSchema = z.object({
 
 export const companyPatchSchema = companyCreateSchema.partial().omit({ enrich: true }).extend({
   enrich: z.boolean().optional(),
+  /**
+   * Campos próprios e links da loja da EMPRESA (`companies.custom_fields`,
+   * migration 9001). SUBSTITUI o objeto inteiro, como o do contato: quem edita
+   * um pedaço manda o objeto completo (ver `aplicarLinks`/`aplicarMudancas`).
+   * Mesmo teto de 32 KB do contato.
+   */
+  custom_fields: customFieldsSchema.optional(),
 });
 
 export const personCreateSchema = z.object({

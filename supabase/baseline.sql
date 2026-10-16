@@ -55411,3 +55411,28 @@ create index if not exists crm_tasks_demanda_idx
 
 comment on column public.crm_tasks.demanda_id is
   'A demanda de atendimento que originou o combinado (#2818). set null, não cascade: encerrar ou apagar a demanda não pode apagar o lembrete que a pessoa escreveu para si mesma — a tarefa continua na lista, com o vínculo zerado. NULL = tarefa avulsa ou presa só a negócio/contato.';
+
+-- ---- equipe da empresa (saiu_em) e campos próprios da empresa (migration 9001, fork Elite) ----
+-- Ver supabase/migrations/20991231000001_9001_elite_equipe_saiu_em_e_campos_da_empresa.sql.
+alter table public.company_people
+  add column if not exists saiu_em timestamptz;
+
+comment on column public.company_people.saiu_em is
+  'Quando a pessoa saiu da equipe da empresa. Nulo = ativa. Preenchido: o nome deixa de ser exibido no painel da empresa (fica cargo + final do número) e a venda continua contando para a empresa.';
+
+alter table public.companies
+  add column if not exists custom_fields jsonb not null default '{}'::jsonb;
+
+comment on column public.companies.custom_fields is
+  'Valores de campos próprios da empresa (e links da loja: link_<tipo>). As definições são declaradas em organizations.settings.company_fields[].';
+
+update public.companies
+   set custom_fields = '{}'::jsonb
+ where custom_fields is null
+    or jsonb_typeof(custom_fields) <> 'object';
+
+alter table public.companies
+  drop constraint if exists companies_custom_fields_object;
+alter table public.companies
+  add constraint companies_custom_fields_object
+  check (jsonb_typeof(custom_fields) = 'object');

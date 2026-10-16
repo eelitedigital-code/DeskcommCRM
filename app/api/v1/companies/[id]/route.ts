@@ -13,6 +13,7 @@ import {
   ok,
   requestIdOf,
   seModuloB2bDesligado,
+  seEmpresasDesligadas,
 } from "@/lib/crm-b2b/route-helpers";
 import { createClient } from "@/lib/supabase/server";
 
@@ -26,6 +27,8 @@ export async function GET(req: NextRequest, { params }: Ctx): Promise<Response> 
   if (desligado) return desligado;
   const authz = await requireRole("viewer", { requestId, resource: "companies" });
   if (!authz.ok) return authz.response;
+  const semEmpresas = await seEmpresasDesligadas(authz, requestId);
+  if (semEmpresas) return semEmpresas;
   const { id } = await params;
 
   try {
@@ -45,6 +48,8 @@ export async function PATCH(req: NextRequest, { params }: Ctx): Promise<Response
   if (supportDenied) return supportDenied;
   const authz = await requireRole("agent", { requestId, resource: "companies" });
   if (!authz.ok) return authz.response;
+  const semEmpresas = await seEmpresasDesligadas(authz, requestId);
+  if (semEmpresas) return semEmpresas;
   const { id } = await params;
 
   try {
@@ -72,6 +77,8 @@ export async function DELETE(req: NextRequest, { params }: Ctx): Promise<Respons
   if (supportDenied) return supportDenied;
   const authz = await requireRole("manager", { requestId, resource: "companies" });
   if (!authz.ok) return authz.response;
+  const semEmpresas = await seEmpresasDesligadas(authz, requestId);
+  if (semEmpresas) return semEmpresas;
   const { id } = await params;
 
   try {

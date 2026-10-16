@@ -8,6 +8,7 @@ import {
   ok,
   requestIdOf,
   seModuloB2bDesligado,
+  seEmpresasDesligadas,
 } from "@/lib/crm-b2b/route-helpers";
 import { createClient } from "@/lib/supabase/server";
 
@@ -27,6 +28,8 @@ export async function GET(req: NextRequest): Promise<Response> {
   if (desligado) return desligado;
   const authz = await requireRole("manager", { requestId, resource: "companies" });
   if (!authz.ok) return authz.response;
+  const semEmpresas = await seEmpresasDesligadas(authz, requestId);
+  if (semEmpresas) return semEmpresas;
 
   try {
     const cnpj = req.nextUrl.searchParams.get("cnpj") ?? "";

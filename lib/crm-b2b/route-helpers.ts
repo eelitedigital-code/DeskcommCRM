@@ -9,6 +9,7 @@ import { fail, ok } from "@/lib/api/wrappers";
 import type { HandlerCtx } from "@/lib/api/handlers/types";
 import type { RoleCheck } from "@/lib/auth/require-role";
 import { moduloLigado } from "@/lib/instalacao/modulos";
+import { capacidadesDaOrganizacao } from "@/lib/organizacao/capacidades";
 import { createAdminClient } from "@/lib/supabase/admin";
 
 /**
@@ -21,6 +22,29 @@ import { createAdminClient } from "@/lib/supabase/admin";
 export async function seModuloB2bDesligado(requestId: string): Promise<Response | null> {
   if (await moduloLigado(createAdminClient(), "crm_b2b")) return null;
   return fail("not_found", "Not found.", 404, { requestId });
+}
+
+/**
+ * O SEGUNDO interruptor: a EMPRESA ligou "Empresas" para si
+ * (`lib/organizacao/capacidades.ts`, capacidade `empresas`)? O módulo é da
+ * instalação; a capacidade é de cada organização — nem todo cliente vende para
+ * empresa. Desligada: 403, depois do papel conferido (a organização vem da
+ * sessão). Nada é apagado; religar devolve tudo.
+ *
+ * A capacidade já soma o módulo: com o módulo desligado ela nunca liga.
+ */
+export async function seEmpresasDesligadas(
+  authz: Extract<RoleCheck, { ok: true }>,
+  requestId: string,
+): Promise<Response | null> {
+  const ligadas = await capacidadesDaOrganizacao(createAdminClient(), authz.org.orgId);
+  if (ligadas.includes("empresas")) return null;
+  return fail(
+    "capacidade_desligada",
+    "Empresas está desligado para esta organização. Quem administra a empresa liga em Configurações › Organização.",
+    403,
+    { requestId },
+  );
 }
 
 export function requestIdOf(req: Request): string {

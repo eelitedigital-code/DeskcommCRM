@@ -28,6 +28,28 @@ describe("capacidadesLigadas — só o booleano true liga", () => {
   });
 });
 
+describe("capacidade empresas — o cadastro B2B que cada empresa liga para si", () => {
+  it("companies.enabled === true liga empresas, com o módulo crm_b2b ligado", () => {
+    expect(capacidadesLigadas({ companies: { enabled: true } }, ["crm_b2b"])).toEqual(["empresas"]);
+  });
+  it("módulo crm_b2b desligado: a empresa ligada não conta", () => {
+    expect(capacidadesLigadas({ companies: { enabled: true } }, ["propostas"])).toEqual([]);
+  });
+  it("as duas capacidades convivem, cada uma com o seu módulo", () => {
+    expect(
+      capacidadesLigadas(
+        { proposals: { enabled: true }, companies: { enabled: true } },
+        ["propostas", "crm_b2b"],
+      ),
+    ).toEqual(["propostas", "empresas"]);
+  });
+  it("só true liga — string, ausente e lixo não", () => {
+    for (const s of [{ companies: { enabled: "true" } }, { companies: true }, {}]) {
+      expect(capacidadesLigadas(s, ["crm_b2b"]), JSON.stringify(s)).toEqual([]);
+    }
+  });
+});
+
 /** Banco falso das duas leituras: a linha da organização e `platform_config`. */
 function dbQueDevolve(
   resultado: { data: unknown; error: unknown } | Error,

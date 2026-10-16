@@ -41,6 +41,7 @@ import { ROLE_RANK } from "@/lib/auth/types";
 import { TimelineView } from "@/components/contacts/TimelineView";
 import { EditContactDialog } from "@/components/contacts/EditContactDialog";
 import { DadosDoCliente } from "@/components/contacts/DadosDoCliente";
+import { EmpresaDoContato } from "@/components/contacts/EmpresaDoContato";
 import { NegociosDoContato } from "@/components/contacts/NegociosDoContato";
 import { AnonymizeDialog } from "@/components/contacts/AnonymizeDialog";
 import { PropostasDeDado } from "@/components/contacts/PropostasDeDado";
@@ -388,6 +389,7 @@ export function ContactDetailClient({ contactId, paineisDeModulo = [] }: Props) 
                   <dt className="text-xs uppercase text-muted-foreground">{t("Nome")} · WhatsApp</dt>
                   <dd className="mt-1">{contact.display_name ?? "—"}</dd>
                 </div>
+                <EmpresaDoContato contactId={contactId} />
                 <div>
                   <dt className="text-xs uppercase text-muted-foreground">Email</dt>
                   <dd className="mt-1">{contact.email ?? "—"}</dd>

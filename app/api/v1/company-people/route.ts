@@ -9,6 +9,7 @@ import {
   ok,
   requestIdOf,
   seModuloB2bDesligado,
+  seEmpresasDesligadas,
 } from "@/lib/crm-b2b/route-helpers";
 import { createClient } from "@/lib/supabase/server";
 
@@ -22,6 +23,8 @@ export async function POST(req: NextRequest): Promise<Response> {
   if (supportDenied) return supportDenied;
   const authz = await requireRole("manager", { requestId, resource: "company_people" });
   if (!authz.ok) return authz.response;
+  const semEmpresas = await seEmpresasDesligadas(authz, requestId);
+  if (semEmpresas) return semEmpresas;
 
   try {
     const body = await req.json();

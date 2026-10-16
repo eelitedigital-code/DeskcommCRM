@@ -160,6 +160,7 @@ export type Database = {
           enrichment_error: string | null
           brasilapi_raw: Json | null
           created_by: string | null
+          custom_fields: Json
           created_at: string
           updated_at: string
         }
@@ -192,6 +193,7 @@ export type Database = {
           enrichment_error?: string | null
           brasilapi_raw?: Json | null
           created_by?: string | null
+          custom_fields?: Json
           created_at?: string
           updated_at?: string
         }
@@ -224,6 +226,7 @@ export type Database = {
           enrichment_error?: string | null
           brasilapi_raw?: Json | null
           created_by?: string | null
+          custom_fields?: Json
           created_at?: string
           updated_at?: string
         }
@@ -249,6 +252,7 @@ export type Database = {
           is_primary: boolean
           notes: string | null
           created_at: string
+          saiu_em: string | null
           updated_at: string
         }
         Insert: {
@@ -262,6 +266,7 @@ export type Database = {
           is_primary?: boolean
           notes?: string | null
           created_at?: string
+          saiu_em?: string | null
           updated_at?: string
         }
         Update: {
@@ -275,6 +280,7 @@ export type Database = {
           is_primary?: boolean
           notes?: string | null
           created_at?: string
+          saiu_em?: string | null
           updated_at?: string
         }
         Relationships: [

@@ -22,7 +22,7 @@ type SB = SupabaseClient;
 type LookupClient = { lookupCnpj(normalizedCnpj: string): Promise<BrasilApiResult> };
 
 const SELECT =
-  "id, organization_id, legal_name, trade_name, cnpj, normalized_cnpj, registration_status, legal_nature, company_size, share_capital, opened_at, main_cnae_code, main_cnae_description, secondary_cnaes, street, number, complement, district, city, state, zip_code, email, phone, enrichment_status, enriched_at, enrichment_error, created_by, created_at, updated_at";
+  "id, organization_id, legal_name, trade_name, cnpj, normalized_cnpj, registration_status, legal_nature, company_size, share_capital, opened_at, main_cnae_code, main_cnae_description, secondary_cnaes, street, number, complement, district, city, state, zip_code, email, phone, enrichment_status, enriched_at, enrichment_error, custom_fields, created_by, created_at, updated_at";
 
 function err(
   ctx: HandlerCtx,
@@ -102,6 +102,12 @@ export async function createCompanyHandler(
   raw: unknown,
 ) {
   const body: CompanyCreate = companyCreateSchema.parse(raw);
+  // O NOME é o único obrigatório (Especificação 02, D2): muito fabricante
+  // pequeno não tem os dados formais à mão. Com CNPJ, a consulta completa o
+  // resto — mas a empresa nunca nasce sem nome, nem quando a consulta falha.
+  if (!body.trade_name?.trim() && !body.legal_name?.trim()) {
+    err(ctx, 422, "validation_failed", "Informe o nome da empresa.");
+  }
   const normalized = body.cnpj ? normalizeCnpj(body.cnpj) : null;
   if (body.cnpj && !normalized) err(ctx, 422, "validation_failed", "CNPJ inválido.");
 

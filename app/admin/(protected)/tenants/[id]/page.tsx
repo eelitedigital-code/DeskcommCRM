@@ -5,7 +5,9 @@ import {
   type AssinaturaDoCard,
   type PlanoDoCard,
 } from "@/components/admin/tenants/CardDeCobranca";
-import { moduloLigado } from "@/lib/instalacao/modulos";
+import { CardDeEmpresas } from "@/components/admin/tenants/CardDeEmpresas";
+import { moduloLigado, modulosLigados } from "@/lib/instalacao/modulos";
+import { capacidadesLigadas } from "@/lib/organizacao/capacidades";
 import { createAdminClient } from "@/lib/supabase/admin";
 
 import { TenantOverviewClient } from "./_client";
@@ -16,11 +18,12 @@ interface TenantDetailPageProps {
 
 export default async function TenantDetailPage({ params }: TenantDetailPageProps) {
   const { id } = await params;
-  const cobranca = await lerCobrancaDoTenant(id);
+  const [cobranca, empresas] = await Promise.all([lerCobrancaDoTenant(id), lerEmpresasDoTenant(id)]);
   return (
     <div className="space-y-6">
       <TenantOverviewClient id={id} cobrancaLigada={cobranca !== null} />
       {cobranca && <CardDeCobranca orgId={id} {...cobranca} />}
+      {empresas && <CardDeEmpresas orgId={id} ligadoInicial={empresas.ligado} />}
     </div>
   );
 }
@@ -56,4 +59,20 @@ async function lerCobrancaDoTenant(orgId: string) {
     suspensaPorCobranca: org.data?.status === "suspended" && org.data?.suspended_kind === "cobranca",
     rotuloAntigo: typeof rotulo === "string" && rotulo !== "" ? rotulo : null,
   };
+}
+
+/**
+ * A capacidade `empresas` desta organização. `null` = o módulo `crm_b2b` está
+ * desligado na instalação: não há o que a empresa ligar, e o card não aparece.
+ */
+async function lerEmpresasDoTenant(orgId: string): Promise<{ ligado: boolean } | null> {
+  if (!z.string().uuid().safeParse(orgId).success) return null;
+  const admin = createAdminClient();
+  if (!(await moduloLigado(admin, "crm_b2b"))) return null;
+  const [{ data }, modulos] = await Promise.all([
+    admin.from("organizations").select("settings").eq("id", orgId).maybeSingle(),
+    modulosLigados(admin),
+  ]);
+  if (!data) return null;
+  return { ligado: capacidadesLigadas(data.settings, modulos).includes("empresas") };
 }

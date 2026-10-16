@@ -1,6 +1,12 @@
 /**
- * Links do CONTATO (Instagram, site, Google Meu Negócio…) — o que o funil
- * mostra ao lado de telefone e e-mail.
+ * Links do CONTATO e da EMPRESA (Instagram, site, loja no marketplace…) — o
+ * que o funil mostra ao lado de telefone e e-mail, e o que a ficha da empresa
+ * mostra da marca.
+ *
+ * Mesma tecnologia, VALORES INDEPENDENTES: as funções recebem qualquer
+ * `custom_fields` — o do contato (`contacts.custom_fields`) ou o da empresa
+ * (`companies.custom_fields`, migration 9001). O Instagram da pessoa e o da
+ * marca são coisas diferentes, e nada aqui copia ou sincroniza um no outro.
  *
  * ── Onde ficam guardados ──────────────────────────────────────────────────────
  *
@@ -21,6 +27,12 @@
 export const TIPOS_DE_LINK = [
   { id: "instagram", rotulo: "Instagram", curto: "IG" },
   { id: "site", rotulo: "Site", curto: "Site" },
+  // A loja do cliente no marketplace (Especificação 02, D5): para a assessoria
+  // de marketplace vale mais que o Facebook. Só o rótulo — o endereço é o que a
+  // pessoa cola, sem host de terceiro no código (`tests/unit/branding.test.ts`).
+  { id: "shopee", rotulo: "Shopee", curto: "Shopee" },
+  { id: "mercado_livre", rotulo: "Mercado Livre", curto: "ML" },
+  { id: "tiktok_shop", rotulo: "TikTok Shop", curto: "TT Shop" },
   { id: "google_meu_negocio", rotulo: "Google Meu Negócio", curto: "Google" },
   { id: "facebook", rotulo: "Facebook", curto: "FB" },
   { id: "linkedin", rotulo: "LinkedIn", curto: "In" },

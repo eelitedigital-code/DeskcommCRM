@@ -16,7 +16,7 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import { modulosLigados, type ModuloOpcional } from "@/lib/instalacao/modulos";
 import { logger } from "@/lib/logger";
 
-export const CAPACIDADES_DA_ORGANIZACAO = ["propostas"] as const;
+export const CAPACIDADES_DA_ORGANIZACAO = ["propostas", "empresas"] as const;
 export type CapacidadeDaOrganizacao = (typeof CAPACIDADES_DA_ORGANIZACAO)[number];
 
 /**
@@ -27,6 +27,20 @@ export type CapacidadeDaOrganizacao = (typeof CAPACIDADES_DA_ORGANIZACAO)[number
  */
 const MODULO_DA_CAPACIDADE: Record<CapacidadeDaOrganizacao, ModuloOpcional> = {
   propostas: "propostas",
+  // Empresas, equipe e painel de vendas da empresa (cadastro B2B). Nem todo
+  // cliente vende para empresa: a instalação oferece o módulo, e cada empresa
+  // liga para si.
+  empresas: "crm_b2b",
+};
+
+/**
+ * A chave de `organizations.settings` de cada capacidade — `{ enabled: true }`
+ * dentro dela liga. `propostas` lê `settings.proposals` desde antes desta
+ * lista existir; `empresas` segue o mesmo formato em `settings.companies`.
+ */
+export const CHAVE_DA_CAPACIDADE: Record<CapacidadeDaOrganizacao, string> = {
+  propostas: "proposals",
+  empresas: "companies",
 };
 
 function objeto(v: unknown): Record<string, unknown> | null {
@@ -41,8 +55,10 @@ export function capacidadesLigadas(
   settings: unknown,
   modulos: readonly ModuloOpcional[],
 ): CapacidadeDaOrganizacao[] {
-  const propostas = objeto(objeto(settings)?.proposals);
-  const daEmpresa: CapacidadeDaOrganizacao[] = propostas?.enabled === true ? ["propostas"] : [];
+  const s = objeto(settings);
+  const daEmpresa = CAPACIDADES_DA_ORGANIZACAO.filter(
+    (c) => objeto(s?.[CHAVE_DA_CAPACIDADE[c]])?.enabled === true,
+  );
   return daEmpresa.filter((c) => modulos.includes(MODULO_DA_CAPACIDADE[c]));
 }
 

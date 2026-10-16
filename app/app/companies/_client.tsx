@@ -103,7 +103,8 @@ export function CompaniesListClient() {
     const dados = json?.data ?? {};
     const f = dados.fields ?? {};
     setLegalName((f.legal_name as string) || legalName);
-    setTradeName((f.trade_name as string) || tradeName);
+    // O nome que a pessoa digitou vence; a consulta só preenche se estiver vazio.
+    setTradeName(tradeName.trim() || (f.trade_name as string) || (f.legal_name as string) || "");
     setStreet((f.street as string) || "");
     setNumber((f.number as string) || "");
     setComplement((f.complement as string) || "");
@@ -129,7 +130,7 @@ export function CompaniesListClient() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         legal_name: legalName || null,
-        trade_name: tradeName || null,
+        trade_name: tradeName.trim() || null,
         cnpj: cnpj || null,
         street: street || null,
         number: number || null,
@@ -172,7 +173,7 @@ export function CompaniesListClient() {
         <div>
           <h1 className="text-xl font-semibold tracking-tight">{t("Empresas")}</h1>
           <p className="text-sm text-muted-foreground">
-            {t("Cadastro B2B com CNPJ e enriquecimento via BrasilAPI.")}
+            {t("Empresas que compram de você, a equipe de cada uma e quanto já compraram.")}
           </p>
         </div>
         <Button onClick={() => setCreateOpen(true)}>
@@ -257,13 +258,19 @@ export function CompaniesListClient() {
             <DialogTitle>{t("Nova empresa")}</DialogTitle>
           </DialogHeader>
           <div className="grid max-h-[60vh] gap-3 overflow-y-auto py-2 pr-1">
+            {/* O NOME é o único obrigatório (Especificação 02, D2). O CNPJ é
+                opcional; com ele, a consulta completa o resto. */}
             <div className="grid gap-1.5">
-              <Label>{t("Razão social")}</Label>
-              <Input value={legalName} onChange={(e) => setLegalName(e.target.value)} />
-            </div>
-            <div className="grid gap-1.5">
-              <Label>{t("Nome fantasia")}</Label>
-              <Input value={tradeName} onChange={(e) => setTradeName(e.target.value)} />
+              <Label htmlFor="empresa-nome">
+                {t("Nome da empresa")} <span className="text-error-fg">*</span>
+              </Label>
+              <Input
+                id="empresa-nome"
+                value={tradeName}
+                maxLength={500}
+                placeholder={t("Como a empresa é conhecida")}
+                onChange={(e) => setTradeName(e.target.value)}
+              />
             </div>
             <div className="grid gap-1.5">
               <Label>CNPJ</Label>
@@ -283,6 +290,16 @@ export function CompaniesListClient() {
                   {consulting ? t("Consultando…") : t("Consultar CNPJ")}
                 </Button>
               </div>
+            </div>
+            <div className="grid gap-1.5">
+              <Label htmlFor="empresa-razao">{t("Razão social (opcional)")}</Label>
+              <Input
+                id="empresa-razao"
+                value={legalName}
+                maxLength={500}
+                placeholder={t("A consulta do CNPJ preenche")}
+                onChange={(e) => setLegalName(e.target.value)}
+              />
             </div>
             <div className="grid gap-3 sm:grid-cols-2">
               <div className="grid gap-1.5">
@@ -371,7 +388,7 @@ export function CompaniesListClient() {
             <Button variant="outline" onClick={() => setCreateOpen(false)}>
               {t("Cancelar")}
             </Button>
-            <Button onClick={() => void create()} disabled={saving || (!legalName && !tradeName && !cnpj)}>
+            <Button onClick={() => void create()} disabled={saving || !tradeName.trim()}>
               {saving ? t("Salvando…") : t("Criar")}
             </Button>
           </DialogFooter>

@@ -11,6 +11,10 @@ import { Art15Form } from "./_art15";
 import { ZonaDePerigoDaOrganizacao } from "./_danger-zone";
 import { TenantForm } from "./_form";
 import { InterfaceDaEmpresaForm } from "./_interface";
+import { EmpresasDaOrganizacao } from "./_empresas";
+import { capacidadesLigadas } from "@/lib/organizacao/capacidades";
+import { createAdminClient } from "@/lib/supabase/admin";
+import { moduloLigado, modulosLigados } from "@/lib/instalacao/modulos";
 
 export const dynamic = "force-dynamic";
 
@@ -55,6 +59,11 @@ export default async function TenantSettingsPage() {
   // o que a tela mostra é o que o PDF vai imprimir, inclusive o `null` de quem
   // deixou a alínea em branco.
   const alineas = row ? art15DoControlador(row.settings) : null;
+  // A capacidade `empresas` só se oferece com o módulo da instalação ligado.
+  const adminDb = createAdminClient();
+  const b2bNaInstalacao = await moduloLigado(adminDb, "crm_b2b");
+  const empresasLigado =
+    b2bNaInstalacao && capacidadesLigadas(row?.settings, await modulosLigados(adminDb)).includes("empresas");
 
   return (
     <div className="flex h-full flex-col gap-6 p-6">
@@ -103,6 +112,7 @@ export default async function TenantSettingsPage() {
           role={activeOrg.role}
         />
       )}
+      {row && b2bNaInstalacao && <EmpresasDaOrganizacao ligadoInicial={empresasLigado} />}
       {row && <ZonaDePerigoDaOrganizacao displayName={row.display_name} />}
     </div>
   );

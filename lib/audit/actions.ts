@@ -1118,6 +1118,16 @@ export const AUDIT_ACTIONS = [
   // apagar um campo some com ele de todas as fichas, e só esta linha diz quem.
   "settings.contact_fields_updated",
 
+  // Capacidade `empresas` (cadastro B2B, equipe e painel de vendas da empresa)
+  // ligada ou desligada — pela própria organização ou pelo admin da plataforma
+  // (`metadata.por`). Sem esta linha, "por que a tela Empresas sumiu?" não tem
+  // resposta: nada é apagado, só a porta muda.
+  "settings.capacidade_empresas_updated",
+
+  // Campos próprios da EMPRESA (cadastro B2B): a lista
+  // `organizations.settings.company_fields` mudou, com `de`/`para`.
+  "settings.company_fields_updated",
+
   // Planos de tarefa (#1752): a lista `settings.task_plans` mudou pela rota
   // `settings/task-plans` — mesma família de `campaign.settings_updated`.
   "task_plans.settings_updated",

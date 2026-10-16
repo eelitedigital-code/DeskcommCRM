@@ -617,6 +617,24 @@ const DA_EMPRESA: RecursoOpcional[] = [
           ? "ligado"
           : "desligado",
   },
+  {
+    id: "empresas_da_organizacao",
+    nome: "Empresas da organização",
+    oQueFaz:
+      "Com o módulo do servidor ligado, a empresa liga para si o cadastro de empresas, a equipe de cada uma e o painel com quanto ela já comprou.",
+    nivel: "organizacao",
+    padrao: "desligado",
+    quemDecide: "admin",
+    href: "/app/settings/tenant",
+    modulo: "crm_b2b",
+    capacidade: "empresas",
+    ler: (f) =>
+      f.settings === null || f.modulos === null
+        ? "nao_lido"
+        : capacidadesLigadas(f.settings, f.modulos).includes("empresas")
+          ? "ligado"
+          : "desligado",
+  },
 ];
 
 const DE_CADA_AGENTE: RecursoOpcional[] = [

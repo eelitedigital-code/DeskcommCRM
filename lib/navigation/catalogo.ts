@@ -269,8 +269,10 @@ export const NAV_CATALOG = [
     // SEM sidebar: o CRM já tem Funis/Contatos/Tarefas no menu diário; este trio
     // mora no hub "Ver tudo em CRM" para não reabrir a corrida por pixel.
     minRole: "viewer",
-    // Módulo opcional da instalação, desligado por padrão (doc 68, #1621).
+    // Módulo opcional da instalação, desligado por padrão (doc 68, #1621), e
+    // capacidade que cada empresa liga para si (`empresas`).
     modulo: "crm_b2b",
+    capacidade: "empresas",
   },
   {
     href: "/app/people",
@@ -280,8 +282,10 @@ export const NAV_CATALOG = [
     group: "crm",
     section: "O dia a dia da venda",
     minRole: "viewer",
-    // Módulo opcional da instalação, desligado por padrão (doc 68, #1621).
+    // Módulo opcional da instalação, desligado por padrão (doc 68, #1621), e
+    // capacidade que cada empresa liga para si (`empresas`).
     modulo: "crm_b2b",
+    capacidade: "empresas",
   },
   {
     // Extraída do PR #418 (@clinicacentrodosorrisosc-code). Fica no CRM e no
@@ -380,8 +384,10 @@ export const NAV_CATALOG = [
     group: "crm",
     section: "Preparar a venda",
     minRole: "manager",
-    // Módulo opcional da instalação, desligado por padrão (doc 68, #1621).
+    // Módulo opcional da instalação, desligado por padrão (doc 68, #1621), e
+    // capacidade que cada empresa liga para si (`empresas`).
     modulo: "crm_b2b",
+    capacidade: "empresas",
   },
   {
     href: "/app/proposals",
@@ -961,6 +967,20 @@ export const NAV_CATALOG = [
     group: "organizacao",
     section: "Sua empresa",
     minRole: "manager",
+  },
+  {
+    // Os dados próprios de cada EMPRESA cliente (cadastro B2B), além da
+    // consulta do CNPJ: definições em `organizations.settings.company_fields`,
+    // valores em `companies.custom_fields` (migration 9001).
+    href: "/app/settings/campos-da-empresa",
+    label: "Campos da empresa",
+    description: "Os dados que você guarda de cada empresa cliente, além da consulta do CNPJ.",
+    icon: "Buildings",
+    group: "organizacao",
+    section: "Sua empresa",
+    minRole: "manager",
+    modulo: "crm_b2b",
+    capacidade: "empresas",
   },
   {
     // A área única dos recursos opcionais (pedido do mantenedor, doc 73/80):

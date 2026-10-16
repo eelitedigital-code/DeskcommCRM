@@ -10,6 +10,7 @@ import {
   ok,
   requestIdOf,
   seModuloB2bDesligado,
+  seEmpresasDesligadas,
 } from "@/lib/crm-b2b/route-helpers";
 import { createClient } from "@/lib/supabase/server";
 
@@ -30,6 +31,8 @@ export async function PATCH(req: NextRequest, { params }: Ctx): Promise<Response
   if (supportDenied) return supportDenied;
   const authz = await requireRole("agent", { requestId, resource: "contacts" });
   if (!authz.ok) return authz.response;
+  const semEmpresas = await seEmpresasDesligadas(authz, requestId);
+  if (semEmpresas) return semEmpresas;
   const { id } = await params;
 
   try {

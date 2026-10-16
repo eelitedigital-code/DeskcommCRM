@@ -17,6 +17,18 @@ import { Label } from "@/components/ui/label";
 import { useAuth } from "@/hooks/auth/AuthProvider";
 import { useT } from "@/hooks/i18n/useT";
 import { ROLE_RANK } from "@/lib/auth/types";
+import { useQueryClient } from "@tanstack/react-query";
+import { DadosDaEmpresa } from "@/components/companies/DadosDaEmpresa";
+import { EquipeDaEmpresa } from "@/components/companies/EquipeDaEmpresa";
+import { VendasDaEmpresa, chaveDasVendas } from "@/components/companies/VendasDaEmpresa";
+
+/** O andamento da consulta de CNPJ em palavras — o banco guarda o código. */
+const ANDAMENTO_DA_CONSULTA: Record<string, string> = {
+  pending: "Na fila",
+  processing: "Consultando…",
+  completed: "Dados públicos preenchidos",
+  failed: "A consulta falhou",
+};
 
 interface Props {
   id: string;
@@ -63,6 +75,7 @@ export function CompanyDetailClient({ id }: Props) {
   const t = useT();
   const router = useRouter();
   const { user, activeOrg } = useAuth();
+  const qc = useQueryClient();
   const [data, setData] = useState<{
     company: Record<string, unknown>;
     people: Array<Record<string, unknown>>;
@@ -168,9 +181,11 @@ export function CompanyDetailClient({ id }: Props) {
           <p className="font-mono text-sm text-muted-foreground">{(c.cnpj as string) || "—"}</p>
         </div>
         <div className="flex flex-wrap items-center gap-2">
-          <Button variant="outline" onClick={() => void enrich()} disabled={enriching}>
-            {enriching ? t("Enriquecendo…") : t("Enriquecer CNPJ")}
-          </Button>
+          {Boolean(c.cnpj) && (
+            <Button variant="outline" onClick={() => void enrich()} disabled={enriching}>
+              {enriching ? t("Consultando…") : t("Consultar CNPJ de novo")}
+            </Button>
+          )}
           {podeEditar ? (
             <Button variant="outline" onClick={abrirEdicao}>
               {t("Editar empresa")}
@@ -210,63 +225,37 @@ export function CompanyDetailClient({ id }: Props) {
                 .filter(Boolean)
                 .join(", ") || "—"}
             </dd>
-            <dt className="text-muted-foreground">{t("Enriquecimento")}</dt>
-            <dd>
-              {(c.enrichment_status as string) || "—"}
-              {c.enrichment_error ? ` — ${c.enrichment_error}` : ""}
-            </dd>
+            {/* Sem CNPJ não há consulta: a empresa vive só com o nome (D2). */}
+            {Boolean(c.cnpj) && (
+              <>
+                <dt className="text-muted-foreground">{t("Consulta do CNPJ")}</dt>
+                <dd data-testid="andamento-da-consulta">
+                  {c.enrichment_status
+                    ? t(ANDAMENTO_DA_CONSULTA[c.enrichment_status as string] ?? (c.enrichment_status as string))
+                    : "—"}
+                  {c.enrichment_status === "failed" && c.enrichment_error
+                    ? ` — ${c.enrichment_error as string}. ${t("Tente de novo em alguns minutos.")}`
+                    : ""}
+                </dd>
+              </>
+            )}
           </dl>
         </Card>
+        <DadosDaEmpresa
+          companyId={id}
+          customFields={(c.custom_fields as Record<string, unknown> | undefined) ?? {}}
+          podeEditar={podeEditar}
+          onSalvo={() => void load()}
+        />
+      </div>
 
-        <Card className="space-y-2 p-4">
-          <h2 className="font-medium">{t("Pessoas / decisores")}</h2>
-          {data.people.length === 0 ? (
-            <p className="text-sm text-muted-foreground">{t("Nenhuma pessoa vinculada.")}</p>
-          ) : (
-            <ul className="space-y-2 text-sm">
-              {data.people.map((p) => {
-                const person = p.people as { id: string; full_name: string; email?: string } | null;
-                return (
-                  <li key={p.id as string} className="flex justify-between gap-2 border-b pb-2">
-                    {person ? (
-                      <Link
-                        className="font-medium hover:underline"
-                        href={`/app/people/${person.id}`}
-                      >
-                        {person.full_name}
-                      </Link>
-                    ) : (
-                      "—"
-                    )}
-                    <div className="text-muted-foreground">{(p.job_title as string) || ""}</div>
-                  </li>
-                );
-              })}
-            </ul>
-          )}
-        </Card>
-
-        <Card className="space-y-2 p-4 md:col-span-2">
-          <h2 className="font-medium">{t("Telefones")}</h2>
-          {data.contacts.length === 0 ? (
-            <p className="text-sm text-muted-foreground">
-              {t("Nenhum telefone ligado às pessoas desta empresa.")}
-            </p>
-          ) : (
-            <ul className="grid gap-2 sm:grid-cols-2 text-sm">
-              {data.contacts.map((ct) => (
-                <li key={ct.id as string} className="rounded-md border px-3 py-2">
-                  <Link href={`/app/contacts/${ct.id}`} className="font-mono hover:underline">
-                    {(ct.phone_number as string) || "—"}
-                  </Link>
-                  <div className="text-muted-foreground">
-                    {(ct.display_name as string) || (ct.name as string) || ""}
-                  </div>
-                </li>
-              ))}
-            </ul>
-          )}
-        </Card>
+      <div className="grid gap-4 md:grid-cols-2">
+        <EquipeDaEmpresa
+          companyId={id}
+          podeEditar={podeEditar}
+          onMudou={() => void qc.invalidateQueries({ queryKey: chaveDasVendas(id) })}
+        />
+        <VendasDaEmpresa companyId={id} />
       </div>
 
       <Dialog

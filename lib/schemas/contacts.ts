@@ -26,7 +26,7 @@ const PHONE_REGEX = /^\+\d{8,15}$/;
  */
 const CUSTOM_FIELDS_MAX_BYTES = 32_768;
 
-const customFieldsSchema = z
+export const customFieldsSchema = z
   .record(z.string().min(1).max(80), z.unknown())
   .refine((value) => JSON.stringify(value).length <= CUSTOM_FIELDS_MAX_BYTES, {
     message: "Campos personalizados excedem o limite de 32 KB",
