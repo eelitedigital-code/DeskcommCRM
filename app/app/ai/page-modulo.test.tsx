@@ -11,7 +11,11 @@ const { modulosLigadosMock } = vi.hoisted(() => ({ modulosLigadosMock: vi.fn() }
 
 vi.mock("@/lib/auth/server", () => ({
   requireAuth: vi.fn().mockResolvedValue({ idioma: "pt-BR", is_platform_admin: false, support: false }),
-  resolveActiveOrg: vi.fn().mockResolvedValue({ role: "admin", interface_settings: undefined }),
+  resolveActiveOrg: vi.fn().mockResolvedValue({ orgId: "org-1", role: "admin", interface_settings: undefined }),
+}));
+// IA ligada (o padrão): o que este teste mede é o MÓDULO, não a capacidade.
+vi.mock("@/lib/organizacao/capacidades", () => ({
+  capacidadesDaOrganizacao: vi.fn().mockResolvedValue(["ia"]),
 }));
 vi.mock("@/lib/instalacao/modulos", () => ({ modulosLigados: modulosLigadosMock }));
 vi.mock("@/lib/supabase/admin", () => ({ createAdminClient: () => ({}) }));

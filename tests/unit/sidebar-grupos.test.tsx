@@ -54,7 +54,7 @@ vi.mock("@/components/shell/VersionFooter", () => ({
 
 function comoPapel(role: ActiveOrg["role"]) {
   authRef.user = { is_platform_admin: false };
-  authRef.activeOrg = { orgId: "org-1", name: "Org", role };
+  authRef.activeOrg = { orgId: "org-1", name: "Org", role, capacidades_ligadas: ["ia"] };
 }
 
 afterEach(cleanup);

@@ -1,6 +1,5 @@
 "use client";
 import { useT } from "@/hooks/i18n/useT";
-import { useActiveOrg } from "@/hooks/auth/AuthProvider";
 import {
   forwardRef,
   useImperativeHandle,
@@ -119,6 +118,11 @@ interface Props {
    * `draft_id` que o consumo usa depois do clique.
    */
   rascunho?: AvisoDeRascunho | null;
+  /**
+   * Capacidade `ia` da organização (Especificação 03). Desligada, nada de
+   * rascunho da IA aqui. Vem de quem desenha o composer: ele não lê a sessão.
+   */
+  iaLigada?: boolean;
 }
 
 export const Composer = forwardRef<ComposerHandle, Props>(function Composer(
@@ -137,12 +141,11 @@ export const Composer = forwardRef<ComposerHandle, Props>(function Composer(
     respondendo,
     onCancelarResposta,
     rascunho = null,
+    iaLigada = true,
   },
   ref,
 ) {
   const t = useT();
-  // Capacidade `ia` (ligada por padrão): desligada, nada de rascunho da IA aqui.
-  const iaLigada = useActiveOrg()?.capacidades_ligadas?.includes("ia") ?? true;
   const [text, setText] = useState(initialDraft);
   // O aviso some no primeiro ENVIO: depois do clique o rascunho foi usado, e
   // deixar a faixa prometendo texto que já saiu seria mentira de tela.

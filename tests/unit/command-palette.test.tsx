@@ -16,14 +16,14 @@ import type { ActiveOrg, AuthUser } from "@/lib/auth/types";
 const push = vi.fn();
 const authRef: { user: Pick<AuthUser, "is_platform_admin">; activeOrg: ActiveOrg | null } = {
   user: { is_platform_admin: false },
-  activeOrg: { orgId: "org-1", name: "Org", role: "admin" },
+  activeOrg: { orgId: "org-1", name: "Org", role: "admin", capacidades_ligadas: ["ia"] },
 };
 
 vi.mock("@/hooks/auth/AuthProvider", () => ({ useAuth: () => authRef }));
 vi.mock("next/navigation", () => ({ useRouter: () => ({ push }) }));
 
 function comoPapel(role: ActiveOrg["role"]) {
-  authRef.activeOrg = { orgId: "org-1", name: "Org", role };
+  authRef.activeOrg = { orgId: "org-1", name: "Org", role, capacidades_ligadas: ["ia"] };
 }
 
 afterEach(() => {

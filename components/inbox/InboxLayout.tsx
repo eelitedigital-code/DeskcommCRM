@@ -790,6 +790,8 @@ export function InboxLayout({ initialSelectedId = null, rascunho = null }: Inbox
               // O aviso é DA conversa da URL: trocar de conversa dentro da inbox
               // não pode deixar um texto sugerido no campo de outra pessoa.
               rascunho={rascunhoVivo}
+              // Capacidade `ia` (ligada por padrão): desligada, some o rascunho da IA.
+              iaLigada={activeOrg?.capacidades_ligadas?.includes("ia") ?? true}
               initialDraft={
                 rascunhoVivo?.leitura.estado === "sugerido" ? rascunhoVivo.leitura.texto : ""
               }

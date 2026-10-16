@@ -426,7 +426,10 @@ describe("a fila trata veto de negócio como veto, não como incidente", () => {
   const ROTEAMENTO =
     'else if (terminal) { const reason = error instanceof Error ? error.message : String(error); ' +
     'await cancelJob(pool, job.id, workerId, (reason.split("\\n", 1)[0] ?? "").slice(0, 300), claimOfJob(job)?.acquired_at); } ' +
-    "else { await failJob(pool, job.id, workerId, error, claimOfJob(job)?.acquired_at); }";
+    // Entre o terminal e o resto mora a IA sem chave (Especificação 03), que
+    // também vai para failJob — só que com um aviso por organização.
+    "else if (ehFaltaDeChaveDeIa(error)) {";
+  const RESTO = "} else { await failJob(pool, job.id, workerId, error, claimOfJob(job)?.acquired_at); } }";
 
   it("erro terminal vai para cancelJob; o resto continua em failJob", () => {
     expect(fonteWorker.length, "guarda de vacuidade: arquivo do worker vazio").toBeGreaterThan(1000);
@@ -436,6 +439,7 @@ describe("a fila trata veto de negócio como veto, não como incidente", () => {
       fonteDisposicao,
       "bloqueio por orçamento em failJob = 5 tentativas por conversa + 1 job_dead crítico sem dedup por job",
     ).toContain(ROTEAMENTO);
+    expect(fonteDisposicao).toContain(RESTO);
     expect(fonteWorker).toContain("ehVetoPermanenteDeNegocio(err)");
   });
 
