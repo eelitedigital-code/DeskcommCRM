@@ -7808,6 +7808,8 @@ export const DICIONARIO: Traducoes = {
   },
   // ─── Campos do cliente e painel de Negócios na ficha do contato ───
   "Campos do cliente": { es: "Campos del cliente" },
+  "Empresas da organização": { es: "Empresas de la organización" },
+  "Com o módulo do servidor ligado, a empresa liga para si o cadastro de empresas, a equipe de cada uma e o painel com quanto ela já comprou.": { es: "Con el módulo del servidor activado, la empresa activa para sí el registro de empresas, el equipo de cada una y el panel con cuánto ya compró." },
   // ─── Empresas: equipe, painel de vendas, campos e links da empresa ───
   "Campos da empresa": { es: "Campos de la empresa" },
   "Os dados que você guarda de cada empresa cliente, além da consulta do CNPJ.": { es: "Los datos que guardas de cada empresa cliente, además de la consulta del CNPJ." },

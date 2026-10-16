@@ -30,6 +30,16 @@ vi.mock("next/navigation", () => ({
   useRouter: () => ({ push, prefetch: vi.fn(), replace: vi.fn() }),
 }));
 
+// Os cartões da Equipe, das Vendas e dos Links (Especificação 02) têm as
+// próprias consultas; este arquivo é sobre EDITAR e EXCLUIR a empresa.
+vi.mock("@/components/companies/EquipeDaEmpresa", () => ({ EquipeDaEmpresa: () => null }));
+vi.mock("@/components/companies/VendasDaEmpresa", () => ({
+  VendasDaEmpresa: () => null,
+  chaveDasVendas: (id: string) => ["empresa-vendas", id],
+}));
+vi.mock("@/components/companies/DadosDaEmpresa", () => ({ DadosDaEmpresa: () => null }));
+
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { CompanyDetailClient } from "@/app/app/companies/[id]/_client";
 
 const EMPRESA = "22222222-2222-4222-8222-222222222222";
@@ -85,7 +95,11 @@ afterEach(() => {
 });
 
 async function renderTela() {
-  render(<CompanyDetailClient id={EMPRESA} />);
+  render(
+    <QueryClientProvider client={new QueryClient()}>
+      <CompanyDetailClient id={EMPRESA} />
+    </QueryClientProvider>,
+  );
   await screen.findByText("ACME LTDA");
 }
 
