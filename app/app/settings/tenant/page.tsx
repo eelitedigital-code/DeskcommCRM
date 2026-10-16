@@ -12,6 +12,8 @@ import { ZonaDePerigoDaOrganizacao } from "./_danger-zone";
 import { TenantForm } from "./_form";
 import { InterfaceDaEmpresaForm } from "./_interface";
 import { EmpresasDaOrganizacao } from "./_empresas";
+import { IaDaEmpresa } from "./_ia";
+import { iaLigadaNaEmpresa } from "@/lib/organizacao/ia-da-empresa";
 import { capacidadesLigadas } from "@/lib/organizacao/capacidades";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { moduloLigado, modulosLigados } from "@/lib/instalacao/modulos";
@@ -112,6 +114,7 @@ export default async function TenantSettingsPage() {
           role={activeOrg.role}
         />
       )}
+      {row && <IaDaEmpresa ligadoInicial={iaLigadaNaEmpresa(row.settings)} />}
       {row && b2bNaInstalacao && <EmpresasDaOrganizacao ligadoInicial={empresasLigado} />}
       {row && <ZonaDePerigoDaOrganizacao displayName={row.display_name} />}
     </div>

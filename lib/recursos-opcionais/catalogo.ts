@@ -35,6 +35,7 @@ import { NAV_CATALOG, type NavMetadata } from "@/lib/navigation/catalogo";
 import { vendaPeloCanalLigada } from "@/lib/conversoes/venda-pelo-canal";
 import { lerConfigDoJev } from "@/lib/ai/decisao/config";
 import { capacidadesLigadas, type CapacidadeDaOrganizacao } from "@/lib/organizacao/capacidades";
+import { iaLigadaNaEmpresa } from "@/lib/organizacao/ia-da-empresa";
 import { conversaFicaComQuemAtendeu } from "@/lib/schemas/routing";
 import { configAssinatura } from "@/lib/messaging/assinatura";
 
@@ -616,6 +617,17 @@ const DA_EMPRESA: RecursoOpcional[] = [
         : capacidadesLigadas(f.settings, f.modulos).includes("propostas")
           ? "ligado"
           : "desligado",
+  },
+  {
+    id: "ia_da_empresa",
+    nome: "Atendimento com IA",
+    oQueFaz:
+      "O assistente lê fotos e áudios e responde os clientes. Desligado, nada de IA é feito nesta empresa e a equipe atende pelo Inbox.",
+    nivel: "organizacao",
+    padrao: "ligado",
+    quemDecide: "admin",
+    href: "/app/settings/tenant",
+    ler: (f) => (f.settings === null ? "nao_lido" : iaLigadaNaEmpresa(f.settings) ? "ligado" : "desligado"),
   },
   {
     id: "empresas_da_organizacao",

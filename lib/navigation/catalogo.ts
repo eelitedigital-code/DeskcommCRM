@@ -534,6 +534,8 @@ export const NAV_CATALOG = [
     section: "Montar o agente",
     minRole: "manager",
     sidebar: true,
+    // Some com a IA desligada na empresa (`lib/organizacao/ia-da-empresa.ts`).
+    capacidade: "ia",
   },
   {
     href: "/app/ai/followups",
@@ -561,6 +563,8 @@ export const NAV_CATALOG = [
     section: "Montar o agente",
     minRole: "manager",
     modulo: "fluxos_atendimento",
+    // Some com a IA desligada na empresa (`lib/organizacao/ia-da-empresa.ts`).
+    capacidade: "ia",
   },
   {
     href: "/app/ai/routers",
@@ -573,6 +577,8 @@ export const NAV_CATALOG = [
     // Saiu do sidebar para dar lugar a Casos: roteador se configura poucas
     // vezes, e o caso pede resposta no mesmo dia. A troca é um-por-um porque o
     // menu inteiro tem de caber em 900px (e2e `navegacao.spec.ts`).
+    // Some com a IA desligada na empresa (`lib/organizacao/ia-da-empresa.ts`).
+    capacidade: "ia",
   },
   {
     href: "/app/ai/credentials",
@@ -588,6 +594,8 @@ export const NAV_CATALOG = [
     group: "ia",
     section: "Montar o agente",
     minRole: "manager",
+    // Some com a IA desligada na empresa (`lib/organizacao/ia-da-empresa.ts`).
+    capacidade: "ia",
   },
   {
     // O sistema chama modelo em 23 lugares e, até esta tela, a escolha vivia
@@ -607,6 +615,8 @@ export const NAV_CATALOG = [
     // `navegacao.spec.ts`, que existe justamente porque agrupar o menu o faz
     // crescer. Configurar provedor é tarefa de poucas vezes; o caminho é o hub
     // "Ver tudo em IA", igual a Credenciais, Conhecimento, Memória e Skills.
+    // Some com a IA desligada na empresa (`lib/organizacao/ia-da-empresa.ts`).
+    capacidade: "ia",
   },
   {
     href: "/app/ai/knowledge/sources",
@@ -616,6 +626,8 @@ export const NAV_CATALOG = [
     group: "ia",
     section: "Ensinar o agente",
     minRole: "manager",
+    // Some com a IA desligada na empresa (`lib/organizacao/ia-da-empresa.ts`).
+    capacidade: "ia",
   },
   {
     href: "/app/ai/memory",
@@ -625,6 +637,8 @@ export const NAV_CATALOG = [
     group: "ia",
     section: "Ensinar o agente",
     minRole: "manager",
+    // Some com a IA desligada na empresa (`lib/organizacao/ia-da-empresa.ts`).
+    capacidade: "ia",
   },
   {
     href: "/app/ai/skills",
@@ -634,6 +648,8 @@ export const NAV_CATALOG = [
     group: "ia",
     section: "Ensinar o agente",
     minRole: "manager",
+    // Some com a IA desligada na empresa (`lib/organizacao/ia-da-empresa.ts`).
+    capacidade: "ia",
   },
   {
     href: "/app/ai/cases",
@@ -648,6 +664,8 @@ export const NAV_CATALOG = [
     // fosse procurar — medido numa loja que vende pelo WhatsApp.
     sidebar: true,
     contador: "casos",
+    // Some com a IA desligada na empresa (`lib/organizacao/ia-da-empresa.ts`).
+    capacidade: "ia",
   },
   {
     href: "/app/ai/inbox",
@@ -675,6 +693,8 @@ export const NAV_CATALOG = [
     // SEM `sidebar`: o grupo IA já tem treze telas e o e2e de navegação exige
     // que o menu inteiro caiba em 900px de altura. Configurar isto é tarefa de
     // poucas vezes; o caminho é o hub "Ver tudo em IA".
+    // Some com a IA desligada na empresa (`lib/organizacao/ia-da-empresa.ts`).
+    capacidade: "ia",
   },
   {
     // Órfã: nenhum lugar do app linkava para cá. O flywheel gerava propostas de
@@ -685,6 +705,8 @@ export const NAV_CATALOG = [
     icon: "Lightbulb",
     group: "ia",
     section: "Acompanhar o agente",
+    // Some com a IA desligada na empresa (`lib/organizacao/ia-da-empresa.ts`).
+    capacidade: "ia",
   },
   {
     // A tela de Uso responde "quanto gastei". Esta responde a pergunta que não
@@ -700,6 +722,8 @@ export const NAV_CATALOG = [
     minRole: "manager",
     // Idem: fora da sidebar para o menu não passar da dobra. Quem vem para cá
     // está diagnosticando, e chega pelo hub ou pelo link do aviso na Central.
+    // Some com a IA desligada na empresa (`lib/organizacao/ia-da-empresa.ts`).
+    capacidade: "ia",
   },
   {
     href: "/app/ai/usage",
@@ -709,6 +733,8 @@ export const NAV_CATALOG = [
     group: "ia",
     section: "Acompanhar o agente",
     minRole: "manager",
+    // Some com a IA desligada na empresa (`lib/organizacao/ia-da-empresa.ts`).
+    capacidade: "ia",
   },
 
   // ---- Canais — por onde as mensagens entram e saem ----

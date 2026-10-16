@@ -6,6 +6,8 @@ import {
   type PlanoDoCard,
 } from "@/components/admin/tenants/CardDeCobranca";
 import { CardDeEmpresas } from "@/components/admin/tenants/CardDeEmpresas";
+import { CardDeIa } from "@/components/admin/tenants/CardDeIa";
+import { iaLigadaNaEmpresa } from "@/lib/organizacao/ia-da-empresa";
 import { moduloLigado, modulosLigados } from "@/lib/instalacao/modulos";
 import { capacidadesLigadas } from "@/lib/organizacao/capacidades";
 import { createAdminClient } from "@/lib/supabase/admin";
@@ -18,12 +20,17 @@ interface TenantDetailPageProps {
 
 export default async function TenantDetailPage({ params }: TenantDetailPageProps) {
   const { id } = await params;
-  const [cobranca, empresas] = await Promise.all([lerCobrancaDoTenant(id), lerEmpresasDoTenant(id)]);
+  const [cobranca, empresas, ia] = await Promise.all([
+    lerCobrancaDoTenant(id),
+    lerEmpresasDoTenant(id),
+    lerIaDoTenant(id),
+  ]);
   return (
     <div className="space-y-6">
       <TenantOverviewClient id={id} cobrancaLigada={cobranca !== null} />
       {cobranca && <CardDeCobranca orgId={id} {...cobranca} />}
       {empresas && <CardDeEmpresas orgId={id} ligadoInicial={empresas.ligado} />}
+      {ia && <CardDeIa orgId={id} ligadoInicial={ia.ligado} />}
     </div>
   );
 }
@@ -75,4 +82,16 @@ async function lerEmpresasDoTenant(orgId: string): Promise<{ ligado: boolean } |
   ]);
   if (!data) return null;
   return { ligado: capacidadesLigadas(data.settings, modulos).includes("empresas") };
+}
+
+/** O atendimento com IA desta organização (ligado por padrão). `null` = id inválido ou inexistente. */
+async function lerIaDoTenant(orgId: string): Promise<{ ligado: boolean } | null> {
+  if (!z.string().uuid().safeParse(orgId).success) return null;
+  const { data } = await createAdminClient()
+    .from("organizations")
+    .select("settings")
+    .eq("id", orgId)
+    .maybeSingle();
+  if (!data) return null;
+  return { ligado: iaLigadaNaEmpresa(data.settings) };
 }

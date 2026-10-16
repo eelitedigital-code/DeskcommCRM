@@ -985,6 +985,11 @@ export function CRMSidePanel({ conversation }: Props) {
         )}
       </section>
 
+      {/* Acervo é a busca da IA na base de conhecimento: some com a IA desligada
+          na empresa (Especificação 03). "Sobre a empresa" e "Memória do contato"
+          não são IA e continuam. */}
+      {activeOrg?.capacidades_ligadas?.includes("ia") !== false && (
+      <>
       <Separator />
 
       {/* Perguntar ao acervo — a MESMA busca que a IA faz, com a origem de cada
@@ -999,6 +1004,8 @@ export function CRMSidePanel({ conversation }: Props) {
         </p>
         <AcervoSearch />
       </section>
+      </>
+      )}
     </aside>
   );
 }

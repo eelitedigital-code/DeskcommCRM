@@ -1128,6 +1128,12 @@ export const AUDIT_ACTIONS = [
   // `organizations.settings.company_fields` mudou, com `de`/`para`.
   "settings.company_fields_updated",
 
+  // O ATENDIMENTO COM IA da empresa ligado ou desligado
+  // (`organizations.settings.ia.enabled`) — pela própria organização ou pelo
+  // admin da plataforma (`metadata.por`). Sem esta linha, "por que a IA parou
+  // de responder?" não tem resposta.
+  "settings.ia_da_empresa_updated",
+
   // Planos de tarefa (#1752): a lista `settings.task_plans` mudou pela rota
   // `settings/task-plans` — mesma família de `campaign.settings_updated`.
   "task_plans.settings_updated",

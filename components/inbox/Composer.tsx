@@ -1,5 +1,6 @@
 "use client";
 import { useT } from "@/hooks/i18n/useT";
+import { useActiveOrg } from "@/hooks/auth/AuthProvider";
 import {
   forwardRef,
   useImperativeHandle,
@@ -140,6 +141,8 @@ export const Composer = forwardRef<ComposerHandle, Props>(function Composer(
   ref,
 ) {
   const t = useT();
+  // Capacidade `ia` (ligada por padrão): desligada, nada de rascunho da IA aqui.
+  const iaLigada = useActiveOrg()?.capacidades_ligadas?.includes("ia") ?? true;
   const [text, setText] = useState(initialDraft);
   // O aviso some no primeiro ENVIO: depois do clique o rascunho foi usado, e
   // deixar a faixa prometendo texto que já saiu seria mentira de tela.
@@ -474,7 +477,8 @@ export const Composer = forwardRef<ComposerHandle, Props>(function Composer(
           mode === "note" && "border-warning/40 bg-warning-bg",
         )}
       >
-        {mode === "reply" && (
+        {/* O rascunho da IA some com a IA desligada na empresa (Especificação 03). */}
+        {mode === "reply" && iaLigada && (
           <ReplyReviewPanel conversationId={conversationId} disabled={isDisabled} />
         )}
         <TemplateMenu
