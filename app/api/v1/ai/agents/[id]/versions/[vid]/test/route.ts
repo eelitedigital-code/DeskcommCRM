@@ -1,3 +1,4 @@
+import { seIaDesligada } from "@/lib/organizacao/ia-da-empresa";
 import { requireSupportWrite } from "@/lib/impersonate/support";
 /**
  * POST /api/v1/ai/agents/:id/versions/:vid/test (admin)
@@ -98,6 +99,9 @@ export async function POST(req: NextRequest, ctx: Ctx): Promise<Response> {
     tokenRole: "admin",
   });
   if (!authz.ok) return authz.response;
+  // IA desligada na empresa: esta rota gasta (Especificação 03).
+  const semIa = await seIaDesligada(authz.org.orgId, requestId);
+  if (semIa) return semIa;
   const t = (texto: string) => traduzir(texto, authz.idioma ?? "pt-BR");
   const { organizationId, actor } = authz;
 

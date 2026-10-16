@@ -1,3 +1,4 @@
+import { seIaDesligada } from "@/lib/organizacao/ia-da-empresa";
 import { requireSupportWrite } from "@/lib/impersonate/support";
 /**
  * POST /api/v1/ai/routers/:id/test — classifica uma mensagem de TESTE contra o
@@ -64,6 +65,9 @@ export async function POST(req: NextRequest, ctx: RouteCtx): Promise<Response> {
 
   const authz = await requireRole("manager", { requestId, resource: "ai_routers" });
   if (!authz.ok) return authz.response;
+  // IA desligada na empresa: esta rota gasta (Especificação 03).
+  const semIa = await seIaDesligada(authz.org.orgId, requestId);
+  if (semIa) return semIa;
   const t = (texto: string) => traduzir(texto, authz.user.idioma);
   const { org } = authz;
 

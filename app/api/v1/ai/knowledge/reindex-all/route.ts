@@ -1,3 +1,4 @@
+import { seIaDesligada } from "@/lib/organizacao/ia-da-empresa";
 import { requireSupportWrite } from "@/lib/impersonate/support";
 /**
  * POST /api/v1/ai/knowledge/reindex-all
@@ -36,6 +37,9 @@ export async function POST(): Promise<Response> {
   const requestId = randomUUID();
   const authz = await requireRole("manager", { requestId, resource: "ai_knowledge" });
   if (!authz.ok) return authz.response;
+  // IA desligada na empresa: esta rota gasta (Especificação 03).
+  const semIa = await seIaDesligada(authz.org.orgId, requestId);
+  if (semIa) return semIa;
   const { org, user } = authz;
 
   // RLS via cliente user-scoped; o filtro de organização é explícito e a fonte

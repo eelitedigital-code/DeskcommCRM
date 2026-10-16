@@ -1,3 +1,4 @@
+import { seIaDesligada } from "@/lib/organizacao/ia-da-empresa";
 import { randomUUID } from "node:crypto";
 import { requireRole } from "@/lib/auth/require-role";
 import { requireSupportWrite } from "@/lib/impersonate/support";
@@ -15,6 +16,9 @@ export async function POST(req: Request) {
   const requestId = randomUUID();
   const auth = await requireRole("admin", { requestId, resource: "ai_agents" });
   if (!auth.ok) return auth.response;
+  // IA desligada na empresa: esta rota gasta (Especificação 03).
+  const semIa = await seIaDesligada(auth.org.orgId, requestId);
+  if (semIa) return semIa;
   const parsed = prospectingAgentSetupSchema.safeParse(await req.json().catch(() => null));
   if (!parsed.success)
     return fail("validation_failed", "Complete o resumo para testar o agente.", 422, { requestId });

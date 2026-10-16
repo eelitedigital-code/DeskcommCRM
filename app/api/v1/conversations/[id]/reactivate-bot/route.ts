@@ -1,3 +1,4 @@
+import { seIaDesligada } from "@/lib/organizacao/ia-da-empresa";
 import { requireSupportWrite } from "@/lib/impersonate/support";
 /**
  * POST /api/v1/conversations/[id]/reactivate-bot
@@ -42,6 +43,9 @@ export async function POST(_req: NextRequest, ctx: RouteCtx): Promise<Response> 
 
   const authz = await requireRole("agent", { requestId, resource: "conversations" });
   if (!authz.ok) return authz.response;
+  // IA desligada na empresa: esta rota gasta (Especificação 03).
+  const semIa = await seIaDesligada(authz.org.orgId, requestId);
+  if (semIa) return semIa;
   const t = (texto: string) => traduzir(texto, authz.user.idioma);
   const { user: authUser, org: activeOrg } = authz;
 

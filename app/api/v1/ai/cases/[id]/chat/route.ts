@@ -1,3 +1,4 @@
+import { seIaDesligada } from "@/lib/organizacao/ia-da-empresa";
 /**
  * GET/POST /api/v1/ai/cases/:id/chat — a consulta interna da equipe à IA que
  * ABRIU o caso (migration 0281).
@@ -411,6 +412,9 @@ export async function POST(req: NextRequest, ctx: Ctx): Promise<Response> {
   const requestId = randomUUID();
   const c = await contexto(ctx, requestId);
   if ("response" in c) return c.response;
+  // IA desligada na empresa: conversar com o caso chama o modelo (Especificação 03).
+  const semIa = await seIaDesligada(c.orgId, requestId);
+  if (semIa) return semIa;
 
   let bruto: unknown;
   try {

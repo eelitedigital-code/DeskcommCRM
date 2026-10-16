@@ -1,3 +1,4 @@
+import { seIaDesligada } from "@/lib/organizacao/ia-da-empresa";
 import { randomUUID } from "node:crypto";
 import { requireRole } from "@/lib/auth/require-role";
 import { requireSupportWrite } from "@/lib/impersonate/support";
@@ -19,6 +20,9 @@ export async function POST(req: Request) {
   if (support) return support;
   const auth = await requireRole("admin", { requestId, resource: "prospecting" });
   if (!auth.ok) return auth.response;
+  // IA desligada na empresa: esta rota gasta (Especificação 03).
+  const semIa = await seIaDesligada(auth.org.orgId, requestId);
+  if (semIa) return semIa;
   const parsed = agentChatInputSchema.safeParse(await req.json().catch(() => null));
   if (!parsed.success)
     return fail("validation_failed", "Confira a mensagem e o tamanho da conversa.", 422, {

@@ -1,3 +1,4 @@
+import { seIaDesligada } from "@/lib/organizacao/ia-da-empresa";
 import { withServiceBoundary } from "@/lib/atendimento/fronteira-server";
 import { parseServiceBoundary, StaleServiceBoundaryError } from "@/lib/atendimento/fronteira";
 import { registrarRespostaDeCasoObsoleto } from "@/lib/atendimento/aviso-caso-obsoleto";
@@ -86,6 +87,9 @@ export async function POST(req: NextRequest, { params }: RouteParams): Promise<R
   const requestId = randomUUID();
   const authz = await requireRole("agent", { requestId, resource: "agent_cases" });
   if (!authz.ok) return authz.response;
+  // IA desligada na empresa: esta rota gasta (Especificação 03).
+  const semIa = await seIaDesligada(authz.org.orgId, requestId);
+  if (semIa) return semIa;
   const t = (texto: string) => traduzir(texto, authz.user.idioma);
   const { org, user } = authz;
   const { id: caseId } = await params;

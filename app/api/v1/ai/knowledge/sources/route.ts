@@ -1,3 +1,4 @@
+import { seIaDesligada } from "@/lib/organizacao/ia-da-empresa";
 import { requireSupportWrite } from "@/lib/impersonate/support";
 /**
  * GET  /api/v1/ai/knowledge/sources — os materiais da organização
@@ -114,6 +115,9 @@ export async function POST(req: NextRequest): Promise<Response> {
 
   const authz = await requireRole("manager", { requestId, resource: "ai_knowledge" });
   if (!authz.ok) return authz.response;
+  // IA desligada na empresa: esta rota gasta (Especificação 03).
+  const semIa = await seIaDesligada(authz.org.orgId, requestId);
+  if (semIa) return semIa;
   const t = (texto: string) => traduzir(texto, authz.user.idioma);
   const { org: activeOrg } = authz;
 

@@ -74,3 +74,24 @@ export async function iaDaEmpresaLigadaPeloPool(
     return true;
   }
 }
+
+/**
+ * Para as rotas que GASTAM (chamam o modelo, geram embedding ou acordam o
+ * agente): com a IA desligada, 403 antes de qualquer efeito. Botão sumido não
+ * é rota fechada — e sem chave da organização o gasto cairia na chave da
+ * instalação. As rotas que só LEEM continuam abertas: o funil, os Follow-ups e
+ * as Conexões consomem várias delas.
+ *
+ * O `orgId` vem do `requireRole` (sessão), nunca do corpo.
+ */
+export async function seIaDesligada(orgId: string, requestId: string): Promise<Response | null> {
+  const { createAdminClient } = await import("@/lib/supabase/admin");
+  if (await iaDaEmpresaLigada(createAdminClient(), orgId)) return null;
+  const { fail } = await import("@/lib/api/wrappers");
+  return fail(
+    "ia_desligada",
+    "A IA está desligada nesta empresa. Quem administra liga em Configurações › Organização.",
+    403,
+    { requestId },
+  );
+}

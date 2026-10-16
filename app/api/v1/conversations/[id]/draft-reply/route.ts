@@ -1,3 +1,4 @@
+import { seIaDesligada } from "@/lib/organizacao/ia-da-empresa";
 import { randomUUID } from "node:crypto";
 import type { NextRequest } from "next/server";
 import { requireSupportWrite } from "@/lib/impersonate/support";
@@ -47,6 +48,9 @@ export async function POST(_req: NextRequest, ctx: Ctx) {
   const requestId = randomUUID(),
     c = await context(ctx, requestId);
   if ("response" in c) return c.response;
+  // IA desligada na empresa: o rascunho chama o modelo (Especificação 03).
+  const semIa = await seIaDesligada(c.auth.org.orgId, requestId);
+  if (semIa) return semIa;
   const {
     contact_id: contactId,
     channel_session_id: channelId,
