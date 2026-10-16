@@ -1,0 +1,26 @@
+OK     cópia privada no ar — login HTTP 200
+OK     LIGADA: o menu mostra Agentes de IA
+OK     LIGADA: a tela de Agentes abre — /app/ai/agents
+OK     LIGADA: o webhook simulado é aceito — HTTP 200
+OK     LIGADA: a mensagem é gravada
+OK     LIGADA: nasce o pedido para a IA responder (controle) — 1 pedido(s)
+OK     o admin desliga a IA em Configurações › Organização — true → false
+OK     o banco grava settings.ia.enabled = false
+OK     DESLIGADA: o webhook simulado é aceito — HTTP 200
+OK     DESLIGADA: a mensagem é gravada (a equipe atende)
+OK     DESLIGADA: NÃO nasce pedido para a IA — 0 pedido(s)
+OK     DESLIGADA: o registro diz 'despacho pulado'
+OK     DESLIGADA: Agentes de IA some do menu
+OK     DESLIGADA: a tela de Agentes recusa (403) — /403
+OK     DESLIGADA: a tela de Conhecimento recusa (403) — /403
+OK     DESLIGADA: Follow-ups continua aberto — /app/ai/followups
+OK     DESLIGADA: a rota que gasta (rascunho da IA) recusa com ia_desligada — HTTP 403
+OK     DESLIGADA: a mensagem do cliente chega ao Inbox
+OK     DESLIGADA: o composer não mostra a assistência da IA
+OK     ISOLAMENTO: na empresa B a IA continua no menu
+OK     ISOLAMENTO: na empresa B Agentes continua abrindo — /app/ai/agents
+OK     o admin religa a IA — false → true
+OK     RELIGADA: a tela de Agentes volta a abrir — /app/ai/agents
+OK     RELIGADA: Agentes de IA volta ao menu
+OK     RELIGADA: nasce de novo o pedido para a IA — 1 pedido(s)
+OK     nada foi apagado: as 3 mensagens continuam lá
