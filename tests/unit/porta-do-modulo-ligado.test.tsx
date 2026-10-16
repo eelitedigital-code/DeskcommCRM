@@ -116,8 +116,16 @@ describe("módulo ligado acende a porta mesmo no preset simplificada", () => {
 describe("ondeOModuloAparece: a tela pode dizer o que ligar vai mudar", () => {
   it("módulo com porta devolve o caminho E o grupo do menu", () => {
     const onde = ondeOModuloAparece("crm_b2b");
-    expect(onde.map((p) => p.href)).toEqual(["/app/companies", "/app/people", "/app/imports"]);
-    expect(onde.every((p) => p.grupo === "CRM")).toBe(true);
+    expect(onde.map((p) => p.href)).toEqual([
+      "/app/companies",
+      "/app/people",
+      "/app/imports",
+      // Especificação 02 (fork Elite): os campos próprios da empresa moram em
+      // Configurações, não no CRM.
+      "/app/settings/campos-da-empresa",
+    ]);
+    expect(onde.slice(0, 3).every((p) => p.grupo === "CRM")).toBe(true);
+    expect(onde[3]!.grupo).not.toBe("CRM");
     expect(onde[0]!.label).toBe("Empresas");
   });
 
