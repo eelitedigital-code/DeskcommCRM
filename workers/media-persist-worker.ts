@@ -23,6 +23,7 @@ import { storagePathFor } from "@/lib/messaging/media/types";
 import { MENSAGEM_REDIGIDA } from "@/lib/lgpd/cascata";
 import { logger } from "@/lib/logger";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { iaDaEmpresaLigada } from "@/lib/organizacao/ia-da-empresa";
 
 export const MEDIA_PERSIST_CONSUMER_KEY = "media_persist_v1";
 // Espelha MAX_ATTEMPTS de lib/event-log/drain.ts (não exportado de lá).
@@ -247,6 +248,18 @@ export async function persistMessageMedia(row: EventRow): Promise<HandlerResult>
     return { consumer_key, status: "ok" };
   }
   const isGroup = Boolean((conv as { is_group?: boolean | null } | null)?.is_group);
+
+  // IA DESLIGADA NA EMPRESA (Especificação 03, L1): a leitura da mídia é
+  // trabalho de IA, e o evento não nasce — sem evento, não há tentativa, morte
+  // nem aviso. A mídia fica guardada (`stored`); a derivação fica `skipped` com
+  // o motivo, e religar vale para as mídias seguintes.
+  if (!isGroup && !(await iaDaEmpresaLigada(admin, msg.organization_id))) {
+    await markStatus("stored", {}, {
+      status: "skipped",
+      motivo: "a IA está desligada nesta empresa, então a foto ou áudio não foi lido",
+    });
+    return { consumer_key, status: "ok" };
+  }
 
   if (!isGroup) {
     // Dispara a derivação textual (Onda 3) — fire-and-forget, mesmo padrão do

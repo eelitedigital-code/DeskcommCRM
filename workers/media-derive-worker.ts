@@ -28,6 +28,7 @@ import { createPool } from "@/lib/agent-engine/db/pool";
 import { env } from "@/lib/env";
 import type { EventRow, HandlerResult } from "@/lib/event-log/dispatcher";
 import { avisarIaSemChave, ehFaltaDeChaveDeIa } from "@/lib/event-log/ia-sem-chave";
+import { iaDaEmpresaLigada } from "@/lib/organizacao/ia-da-empresa";
 import { deriveMediaText, type DeriveDeps } from "@/lib/messaging/media/derive";
 import { MARCADOR_NAO_LIDA, TIPOS_DERIVAVEIS } from "@/lib/messaging/media/derivable";
 import { deriveVideoText } from "@/lib/messaging/media/video-derive";
@@ -129,6 +130,9 @@ export async function deriveMessageMedia(row: EventRow): Promise<HandlerResult> 
   if (msg.metadata?.media_status === "expired") return markSkipped("expired by retention");
 
   if (!msg.media_storage_path) return markSkipped("no media");
+  // IA desligada na empresa (Especificação 03, L1): o que já estava na fila
+  // quando desligaram é encerrado sem chamar a IA — sem tentativa, sem aviso.
+  if (!(await iaDaEmpresaLigada(admin, msg.organization_id))) return markSkipped("ia_desligada");
   if (msg.media_derived_status === "ready") return { consumer_key, status: "skipped", detail: "already derived" };
   if (!TIPOS_DERIVAVEIS.has(msg.type)) return { consumer_key, status: "skipped", detail: `type ${msg.type}` };
   // Vídeo é opt-in (custo: ffmpeg + N chamadas de visão): só deriva se algum agente

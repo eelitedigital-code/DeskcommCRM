@@ -22,6 +22,7 @@ import { enqueueJob } from '../../queue/queue';
 import { decidirRajada, debounceEfetivo } from './debounce';
 import { avisoDeEventoMorto, IA_QUE_NAO_RESPONDEU } from '@/lib/event-log/aviso-de-evento-morto';
 import { avisarIaSemChavePeloPool, ehFaltaDeChaveDeIa } from '@/lib/event-log/ia-sem-chave';
+import { iaLigadaNaEmpresa } from '@/lib/organizacao/ia-da-empresa';
 import { canalDesativado } from '@/lib/channels/desativado';
 import { TIPOS_DERIVAVEIS, DERIVACAO_TERMINADA } from '@/lib/messaging/media/derivable';
 import { haQuemAtendaASessao } from '@/lib/ai/agents/quem-atende-a-sessao';
@@ -268,12 +269,23 @@ async function processEvent(
   // Organização parada (suspensa, redigida, arquivada) não gera turno: o evento
   // é consumido sem job. Vai na MESMA consulta do modo externo — uma ida ao banco
   // por evento, não duas — e vem ANTES do `canAssist`, que desliga o gate.
-  const { rows: modeRows } = await pool.query<{ mode: string | null; status: string | null }>(
-    `select settings->>'ai_dispatch_mode' as mode, status from organizations where id = $1`,
+  const { rows: modeRows } = await pool.query<{
+    mode: string | null;
+    status: string | null;
+    settings: unknown;
+  }>(
+    `select settings->>'ai_dispatch_mode' as mode, status, settings from organizations where id = $1`,
     [event.organization_id],
   );
   if (!ehOperante(modeRows[0]?.status)) {
     log.info('drain: organização não operante — evento consumido sem job', { event_id: event.id });
+    return 'processado';
+  }
+  // IA desligada na empresa (Especificação 03, L1): o despacho que já estava na
+  // fila quando desligaram é consumido sem job — sem turno, sem gasto, sem aviso.
+  // A emissão nova nem nasce (`lib/channels/pos-entrada.ts`).
+  if (!iaLigadaNaEmpresa(modeRows[0]?.settings)) {
+    log.info('drain: IA desligada na empresa — evento consumido sem job', { event_id: event.id });
     return 'processado';
   }
   // Spec 14: org em modo 'external' tem agente EXTERNO como dono da conversa —

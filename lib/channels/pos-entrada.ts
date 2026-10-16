@@ -56,6 +56,7 @@ import { ehPedidoDeOptOut } from "@/lib/opt-out/deteccao";
 import { ehContatoDoNumeroInterno } from "@/lib/escalacao/numero-interno-de-aviso";
 import { acelerarFollowupDoInbound, drenarEventosDoInbound } from "@/lib/dev/kick-local-pipeline";
 import { origemDoNegocioPeloCanal } from "@/lib/channels/origem-do-negocio";
+import { iaDaEmpresaLigada } from "@/lib/organizacao/ia-da-empresa";
 import { autorizarContatoParaIA } from "@/lib/ai/elegibilidade/autorizacao";
 import { casarCampanha, lerCampanhas } from "@/lib/ai/elegibilidade/campanha";
 
@@ -485,6 +486,18 @@ async function pedirDespachoDoAgente(admin: Admin, entrada: EntradaDeMensagem): 
       organization_id: entrada.organizationId,
       detail: err instanceof Error ? err.message.slice(0, 120) : "unknown",
     });
+  }
+
+  // IA DESLIGADA NA EMPRESA (Especificação 03, L1): nenhum despacho do agente
+  // nasce. A mensagem já foi gravada e aparece no Inbox para a equipe; só não
+  // há turno, fila nem gasto. Erro de leitura = ligada (`iaDaEmpresaLigada`).
+  if (!(await iaDaEmpresaLigada(admin, entrada.organizationId))) {
+    logger.info("pos-entrada: IA desligada na empresa — despacho pulado", {
+      organization_id: entrada.organizationId,
+      conversation_id: entrada.conversationId,
+      origem: entrada.origem,
+    });
+    return;
   }
 
   const { error } = await admin.rpc("emit_event" as never, {
