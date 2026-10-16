@@ -627,6 +627,7 @@ const DA_EMPRESA: RecursoOpcional[] = [
     padrao: "ligado",
     quemDecide: "admin",
     href: "/app/settings/tenant",
+    capacidade: "ia",
     ler: (f) => (f.settings === null ? "nao_lido" : iaLigadaNaEmpresa(f.settings) ? "ligado" : "desligado"),
   },
   {

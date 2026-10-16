@@ -22,6 +22,7 @@
  * `force_human`, que são por contato e continuam valendo.
  */
 import type { SupabaseClient } from "@supabase/supabase-js";
+import type pg from "pg";
 
 import { logger } from "@/lib/logger";
 
@@ -61,7 +62,7 @@ export async function iaDaEmpresaLigada(db: SupabaseClient, organizationId: stri
 
 /** A mesma pergunta pelo pool do agent-engine (dreno do despacho). */
 export async function iaDaEmpresaLigadaPeloPool(
-  pool: Pick<import("pg").Pool, "query">,
+  pool: Pick<pg.Pool, "query">,
   organizationId: string,
 ): Promise<boolean> {
   try {

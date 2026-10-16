@@ -7808,6 +7808,14 @@ export const DICIONARIO: Traducoes = {
   },
   // ─── Campos do cliente e painel de Negócios na ficha do contato ───
   "Campos do cliente": { es: "Campos del cliente" },
+  "Atendimento com IA": { es: "Atención con IA" },
+  "O assistente lê fotos e áudios e responde os clientes. Desligado, nada de IA é feito nesta empresa e a equipe atende pelo Inbox.": { es: "El asistente lee fotos y audios y responde a los clientes. Desactivado, no se hace nada de IA en esta empresa y el equipo atiende por el Inbox." },
+  "Desligado, esta organização não lê fotos e áudios nem responde com IA. Nada é apagado.": { es: "Desactivado, esta organización no lee fotos ni audios ni responde con IA. No se borra nada." },
+  "IA desligada. Nada foi apagado.": { es: "IA desactivada. No se borró nada." },
+  "IA ligada.": { es: "IA activada." },
+  "Ligado, o assistente lê fotos e áudios e responde os clientes. Desligado, nada disso acontece e as telas de IA somem — a equipe atende pelo Inbox normalmente. Nada é apagado: ao religar, agentes e configurações voltam como estavam.": { es: "Activado, el asistente lee fotos y audios y responde a los clientes. Desactivado, nada de eso ocurre y las pantallas de IA desaparecen — el equipo atiende por el Inbox normalmente. No se borra nada: al volver a activarlo, agentes y configuraciones vuelven como estaban." },
+  "Ligar a IA": { es: "Activar la IA" },
+  "Só o administrador da empresa pode ligar ou desligar a IA.": { es: "Solo el administrador de la empresa puede activar o desactivar la IA." },
   "Empresas da organização": { es: "Empresas de la organización" },
   "Com o módulo do servidor ligado, a empresa liga para si o cadastro de empresas, a equipe de cada uma e o painel com quanto ela já comprou.": { es: "Con el módulo del servidor activado, la empresa activa para sí el registro de empresas, el equipo de cada una y el panel con cuánto ya compró." },
   // ─── Empresas: equipe, painel de vendas, campos e links da empresa ───

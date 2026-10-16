@@ -28,6 +28,7 @@
  * deduplicar UMA vez: um aviso a mais, nunca um a menos.
  */
 import type { SupabaseClient } from "@supabase/supabase-js";
+import type pg from "pg";
 
 import { DETALHE_TECNICO } from "@/lib/event-log/aviso-de-evento-morto";
 import { logger } from "@/lib/logger";
@@ -108,7 +109,7 @@ export async function avisarIaSemChave(
  * para este módulo não puxar o pool para quem usa o client do Supabase.
  */
 export async function avisarIaSemChavePeloPool(
-  pool: Pick<import("pg").Pool, "query">,
+  pool: Pick<pg.Pool, "query">,
   organizationId: string,
   detalheTecnico?: string,
 ): Promise<void> {

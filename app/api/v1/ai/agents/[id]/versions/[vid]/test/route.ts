@@ -100,7 +100,7 @@ export async function POST(req: NextRequest, ctx: Ctx): Promise<Response> {
   });
   if (!authz.ok) return authz.response;
   // IA desligada na empresa: esta rota gasta (Especificação 03).
-  const semIa = await seIaDesligada(authz.org.orgId, requestId);
+  const semIa = await seIaDesligada(authz.organizationId, requestId);
   if (semIa) return semIa;
   const t = (texto: string) => traduzir(texto, authz.idioma ?? "pt-BR");
   const { organizationId, actor } = authz;
