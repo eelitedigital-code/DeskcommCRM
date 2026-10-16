@@ -3,6 +3,7 @@ import { NavHub } from "@/components/shell/NavHub";
 import { requireAuth, resolveActiveOrg } from "@/lib/auth/server";
 import { traduzir } from "@/lib/i18n/dicionario";
 import { modulosLigados } from "@/lib/instalacao/modulos";
+import { capacidadesDaOrganizacao } from "@/lib/organizacao/capacidades";
 import { createAdminClient } from "@/lib/supabase/admin";
 
 export const dynamic = "force-dynamic";
@@ -31,6 +32,11 @@ export default async function AiHubPage() {
       role={activeOrg?.role ?? null}
       interfaceSettings={activeOrg?.interface_settings}
       modulosLigados={await modulosLigados(createAdminClient())}
+      // Com a IA desligada (capacidade `ia`), as portas de IA somem também deste
+      // hub — sem isto ele não filtra por capacidade.
+      capacidadesLigadas={
+        activeOrg ? await capacidadesDaOrganizacao(createAdminClient(), activeOrg.orgId) : undefined
+      }
       title={traduzir("Agente de IA", idioma)}
       subtitle={traduzir(
         "Tudo que define quem atende por você — e como acompanhar o que ele faz.",
