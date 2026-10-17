@@ -1,0 +1,32 @@
+OK     cópia privada no ar — login HTTP 200
+OK     gerente: Mensagens recebidas (30 dias) bate com o banco — 288 na tela, 288 no banco
+OK     gerente: Conversas ativas agora = 4 — 4
+OK     gerente: Espera acima do limite (15 min) = 1 — 1
+OK     gerente: Por atendente traz os dois atendentes e a IA
+OK     gerente: IA x Pessoa aparece
+OK     gerente: Canal com mais leads aparece, com WhatsApp direto na frente
+OK     gerente: Por número traz a janela 8h–18h e o sem janela
+OK     gerente: avisa o número sem janela
+OK     gerente: nada da organização B aparece
+OK     menu em 900 px não rola — conteúdo 795px, área 795px
+OK     menu em 900 px: nenhum grupo fora da dobra
+OK     Dashboard é a primeira porta do Atendimento, acima do Inbox — 0 < 1
+OK     Radar e Respostas rápidas saíram da barra lateral
+OK     'Ver tudo em Atendimento' está no menu
+OK     o hub lista Dashboard, Inbox, Radar, Agenda e Respostas rápidas
+OK     atendente: vê os totais da EMPRESA — 288
+OK     atendente: não vê o Canal com mais leads
+OK     atendente: Por atendente traz só a própria linha e a da IA
+OK     atendente: o nome do colega não aparece em lugar nenhum
+OK     atendente: filtrar pelo colega é recusado — HTTP 403
+OK     10 abas abertas da mesma empresa carregaram o painel
+OK     10 abas abertas = 1 consulta ao banco na janela do cache — 1 consulta(s) no log
+OK     a régua nova muda o selo do tempo de resposta — critico → esperado
+OK     o admin desliga a IA da empresa pela tela — true → false
+OK     IA desligada: o bloco IA x Pessoa some
+OK     IA desligada: a linha da IA some de Por atendente
+OK     período sem mensagem mostra o estado vazio
+OK     organização B: só os números dela — 1
+OK     organização B: só a origem dela no Canal com mais leads
+OK     organização B: nada da A aparece
+OK     nenhum erro do painel no log da cópia

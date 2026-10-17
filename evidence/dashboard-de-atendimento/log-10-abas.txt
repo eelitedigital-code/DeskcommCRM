@@ -1,0 +1,1 @@
+{"level":"info","msg":"painel_atendimento.consulta","ts":"2026-10-16T23:58:07.764Z","organization_id":"df0decc6-1f56-4f91-b3a8-ce35cafbefa2","periodo":"30d","numero":null,"atendente":null}
